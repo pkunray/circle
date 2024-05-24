@@ -16,7 +16,7 @@ const UserHeader = () => {
             <Flex justifyContent={"space-between"} w={"full"}>
                 <Box>
                     <Text fontSize={"2xl"} fontWeight={"bold"}>
-                        Robert Test
+                        Robert Smith
                     </Text>
                     <Flex gap={2} alignItems={"center"}>
                         <Text fontSize={"sm"}>robert</Text>
