@@ -1,102 +1,104 @@
-import { AddIcon } from "@chakra-ui/icons"
-import { Button, CloseButton, Flex, Image, Input, Textarea, position, useColorModeValue, useDisclosure } from "@chakra-ui/react"
-import { useRef, useState } from "react"
-import { Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton, ModalFooter } from "@chakra-ui/react"
-import { FormControl } from "@chakra-ui/react"
-import { BsFillImageFill } from "react-icons/bs"
+import './CreatePost.css';
+import { useRef, useState, useEffect } from "react";
+import { AddIcon } from "@chakra-ui/icons";
+import { Button, CloseButton, Flex, Image, Input, Textarea, useDisclosure, useColorModeValue } from "@chakra-ui/react";
+import { Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton, ModalFooter } from "@chakra-ui/react";
+import { FormControl } from "@chakra-ui/react";
+import { BsFillImageFill } from "react-icons/bs";
 
-const AVA_CHAR = 200;
+const AVAILABLE_CHARS = 300;
 
 const CreatePost = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure(useDisclosure)
-    const [postContent, setPostContent] = useState('')
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const [postContent, setPostContent] = useState('');
+    const [availableCharacters, setAvailableCharacters] = useState(AVAILABLE_CHARS);
+
+    const textArea = useRef(null);
     const fileContent = useRef(null);
     const imgUrl = "";
 
-    const [availableCharacters, setavailableCharacters] = useState(AVA_CHAR);
-
+    //Handles and limits input text
     const handleTextChange = (e) => {
-        const inputText = e.target.value;
-        if (inputText > AVA_CHAR) {
-        //check available characters logic
+        const typedText = e.target.value;
+
+        //Dynamic text area scaling
+        textArea.current.style.height = 'auto';
+        textArea.current.style.height = `${textArea.current.scrollHeight}px`;
+
+        if (typedText.length > AVAILABLE_CHARS) {
+            const postText = typedText.slice(0, AVAILABLE_CHARS);
+            setPostContent(postText);
+            setAvailableCharacters(0);
+        } else {
+            setPostContent(typedText);
+            setAvailableCharacters(AVAILABLE_CHARS - typedText.length);
         }
-    }
-    const handleCreatePost = async () => { }
+    };
+
+    //Handles post publishing 
+    const handleCreatePost = async () => {
+        // Handle create post logic here
+    };
+
+    // Dynamic textbox scaling
+    useEffect(() => {
+        if (textArea.current) {
+            textArea.current.style.height = 'auto';
+            textArea.current.style.height = `${textArea.current.scrollHeight}px`;
+        }
+    }, [postContent]);
 
     return (
         <>
-            <Button
-                position={"fixed"}
-                bottom={10}
-                right={10}
-                leftIcon={<AddIcon />}
-                bg={useColorModeValue("gray.300", "gray.dark")}
-                onClick={onOpen}>
-                Post
+            <Button position={"fixed"} bottom={10} right={5} bg={useColorModeValue("gray.300", "gray.dark")} onClick={onOpen} size={{ base: "sm", sm: "md" }}>
+                <AddIcon />
             </Button>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>
-                        New Post
-                    </ModalHeader>
+                    <ModalHeader>Create New Post</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
                             <Textarea
+                                ref={textArea}
                                 placeholder="content"
                                 onChange={handleTextChange}
-                                value={postContent}>
-                            </Textarea>
-                            <Text
-                                fontSize="xs"
-                                fontWeight="bold"
-                                textAlign={"right"}
-                                margin={"1"}
-                                color={"grey.800"}>
-                                200/200
+                                value={postContent}
+                                style={{ overflow: 'hidden', resize: 'none' }} // Disable scrollbar and resize handle
+                            />
+                            <Text className="available-characters">
+                                {availableCharacters}/{AVAILABLE_CHARS}
                             </Text>
                             <Input
                                 type="file"
                                 hidden
                                 ref={fileContent}
-                                onChange={""}>
-                            </Input>
+                                onChange={handleCreatePost}
+                            />
                             <BsFillImageFill
-                                style={{ marginLeft: "5px", cursor: "pointer" }}
+                                className="image-icon"
                                 size={15}
-                                onClick={() => fileContent.current.click()}>
-                            </BsFillImageFill>
+                                onClick={() => fileContent.current.click()}
+                            />
                         </FormControl>
                         {imgUrl && (
-                            <Flex
-                                mt={5}
-                                w={"full"}
-                                position={"relative"}>
-                                <Image
-                                    src={imgUrl}
-                                    alt='img' />
-                                <CloseButton
-                                    onClick={""}
-                                    bg={"gray.800"}
-                                    position={"absolute"}
-                                    top={2}
-                                    right={2} />
+                            <Flex className="image-container">
+                                <Image src={imgUrl} alt='img' />
+                                <CloseButton className="close-button" onClick={""} />
                             </Flex>
                         )}
                     </ModalBody>
                     <ModalFooter>
-                        <Button
-                            colorScheme='blue'
-                            mr={3}
-                            onClick={handleCreatePost}>
+                        <Button colorScheme="blue" mr={3} onClick={handleCreatePost}>
                             Post!
                         </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
         </>
-    )
-}
+    );
+};
 
-export default CreatePost
+export default CreatePost;
