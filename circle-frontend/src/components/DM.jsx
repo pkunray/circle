@@ -9,7 +9,7 @@ const DM = () => {
       padding={1}
       _hover={{
         cursor: "pointer",
-        bg: useColorModeValue("gray.600", "gray.light"),
+        bg: useColorModeValue("gray.600", "gray.dark"),
         color: "white"
       }}
       borderRadius={"md"}

@@ -3,6 +3,7 @@ import React from 'react'
 import { BsSearch } from 'react-icons/bs'
 import DM from '../components/DM';
 import { GiConversation } from 'react-icons/gi';
+import MessageContainer from '../components/MessageContainer';
 
 const DMPage = () => {
 
@@ -63,7 +64,7 @@ const DMPage = () => {
           <DM />
 
         </Flex>
-        <Flex flex={70}
+        {/* <Flex flex={70}
               borderRadius={"md"} 
               p={2} 
               flexDir={"column"} 
@@ -74,8 +75,10 @@ const DMPage = () => {
           <GiConversation size={20}/>
           <Text fontSize={20}> Select a friend to start messaging </Text>
               
-        </Flex>
-        {/* <Flex flex={70}>MessageContainer</Flex> */}
+        </Flex> */}
+        <MessageContainer>
+
+        </MessageContainer>
       </Flex>
     </Box>
   )
