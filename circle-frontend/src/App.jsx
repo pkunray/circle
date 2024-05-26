@@ -1,9 +1,11 @@
 import { Box, Container } from "@chakra-ui/react"
+import { useState } from "react"
 import UserPage from "./pages/UserPage"
 import PostPage from "./pages/PostPage"
 import { Route, Routes, Navigate } from "react-router-dom"
 import Header from "./components/Header"
 import HomePage from "./pages/HomePage"
+import UpdateProfilePage from "./pages/UpdateProfilePage"
 import AuthPage from "./pages/AuthPage"
 import DMPage from "./pages/DMPage"
 import { useRecoilValue } from "recoil"
@@ -12,12 +14,11 @@ import LogoutButton from "./components/LogoutButton"
 
 
 function App() {
- // const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
   const user = useRecoilValue(userAtom);
   return (
     <Box position={"relative"} width={"full"}>
       <Container maxW="620px">
-
         <Header />
         <Routes>]
           <Route path='/' element={user ? <HomePage/> : <Navigate to="/auth"/>} />
