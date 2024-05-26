@@ -1,7 +1,7 @@
+import Actions from "./Actions"
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
 import { BsThreeDots } from "react-icons/bs"
 import { Link } from "react-router-dom"
-import Actions from "./Actions"
 import { useState } from "react"
 
 function UserPost({ postImg, postTitle, likes, replies }) {

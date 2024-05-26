@@ -1,4 +1,6 @@
 import { Flex } from "@chakra-ui/react";
+import React from "react";
+import qricon from "../icons/qr.svg"
 
 const Actions = ({ liked, setLiked }) => {
 	return (
@@ -75,6 +77,8 @@ const Actions = ({ liked, setLiked }) => {
 					strokeWidth='2'
 				></polygon>
 			</svg>
+
+			<img src={qricon} alt="QR Code" width="20" height="20" />
 		</Flex>
 	);
 };
