@@ -1,47 +1,37 @@
 import './CreatePost.css';
 import { useRef, useState, useEffect } from "react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, CloseButton, Flex, Image, Input, Textarea, useDisclosure, useColorModeValue } from "@chakra-ui/react";
-import { Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalCloseButton, ModalFooter } from "@chakra-ui/react";
-import { FormControl } from "@chakra-ui/react";
+import { Button, CloseButton, Flex, FormControl, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { BsFillImageFill } from "react-icons/bs";
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import useShowToast from '../hooks/useShowToast';
 import userAtom from '../atoms/userAtom';
 import postsAtom from '../atoms/postsAtom';
+import usePreviewImg from '../hooks/usePreviewImg';
+import useShowToast from '../hooks/useShowToast';
 
 const AVAILABLE_CHARS = 300;
-//Add preview image for testing
-const previewImage = "";
 
 const CreatePost = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const { imageURL, setImageURL } = previewImage;
-
+    const { handleImageChange, imageURL, setImageUrl } = usePreviewImg();
+    const { username } = useParams();
     const [postContent, setPostContent] = useState('');
-    const [postText, setPostText] = useState('');
     const [availableCharacters, setAvailableCharacters] = useState(AVAILABLE_CHARS);
     const [loading, setLoading] = useState(false);
     const [posts, setPosts] = useRecoilState(postsAtom);
 
-    const { username } = useParams();
     const user = useRecoilValue(userAtom);
-    const showToast = useShowToast();
     const textArea = useRef(null);
     const fileContent = useRef(null);
+    const showToast = useShowToast();
 
-    //Handles and limits input text
+    //Handles and limits text input
     const handleTextChange = (e) => {
         const typedText = e.target.value;
-
-        //Dynamic text area scaling
-        textArea.current.style.height = 'auto';
-        textArea.current.style.height = `${textArea.current.scrollHeight}px`;
-
         if (typedText.length > AVAILABLE_CHARS) {
-            const postText = typedText.slice(0, AVAILABLE_CHARS);
-            setPostContent(postText);
+            const displayedText = typedText.slice(0, AVAILABLE_CHARS);
+            setPostContent(displayedText);
             setAvailableCharacters(0);
         } else {
             setPostContent(typedText);
@@ -51,44 +41,35 @@ const CreatePost = () => {
 
     //Handles post publishing 
     const handleCreatePost = async () => {
-
-        /* Access to DB (Posts) required
         setLoading(true);
-        
         try {
             const res = await fetch("/api/posts/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ postedBy: user._id, text: postText, img: imageURL }),
+                body: JSON.stringify({ postedBy: user._id, text: postContent, img: imageURL }),
             });
-
             const data = await res.json();
-
             if (data.error) {
-                showToast("Error", data.error, "Data fetching error");
-            } else {
-                showToast("Success", "Post Shared!", "Posting successful");
-    
-                if (username === user.username) {
-                    setPosts([data, ...posts]);
-                }
-    
-                onClose();
-                setPostText("");
-                setImageURL("");
+                showToast("Error", data.error, "error");
+                return;
             }
-
+            showToast("Success", "Post created successfully", "success");
+            if (username === user.username) {
+                setPosts([data, ...posts]);
+            }
+            onClose();
+            setPostContent("");
+            setImageUrl("");
         } catch (error) {
-            showToast("Error", error, "fetching error");
+            showToast("Error", error, "fetching error")
         } finally {
             setLoading(false);
         }
-        */
     };
 
-    // Dynamic textbox scaling
+    //Provides dynamic textbox scaling
     useEffect(() => {
         if (textArea.current) {
             textArea.current.style.height = 'auto';
@@ -108,38 +89,24 @@ const CreatePost = () => {
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
-                            <Textarea
-                                ref={textArea}
-                                placeholder="content"
-                                onChange={handleTextChange}
-                                value={postContent}
-                                style={{ overflow: 'hidden', resize: 'none' }} // Disable scrollbar and resize handle
-                            />
+                            <Textarea ref={textArea} placeholder="content" onChange={handleTextChange} value={postContent} style={{ overflow: 'hidden', resize: 'none' }} />
                             <Text className="available-characters">
                                 {availableCharacters}/{AVAILABLE_CHARS}
                             </Text>
-                            <Input
-                                type="file"
-                                hidden
-                                ref={fileContent}
-                                onChange={handleCreatePost}
-                            />
-                            <BsFillImageFill
-                                className="image-icon"
-                                size={15}
-                                onClick={() => fileContent.current.click()}
-                            />
+                            <Input type="file" hidden ref={fileContent} onChange={handleImageChange} />
+                            <BsFillImageFill className="image-icon" size={15} onClick={() => fileContent.current.click()} />
                         </FormControl>
                         {imageURL && (
-                            <Flex className="image-container">
-                                <Image src={imageURL} alt='img' />
-                                <CloseButton className="close-button" onClick={""} />
+                            <Flex className="image-container" mt={5} w={"full"} position={"relative"}>
+                                <Image src={imageURL} alt='Image' />
+                                <CloseButton onClick={() => { setImageUrl(""); }} bg={"gray.800"} position={"absolute"} top={2} right={2} />
                             </Flex>
                         )}
                     </ModalBody>
+
                     <ModalFooter>
-                        <Button colorScheme="blue" mr={3} onClick={handleCreatePost}>
-                            Post!
+                        <Button colorScheme='blue' mr={3} onClick={handleCreatePost} isLoading={loading}>
+                            Post
                         </Button>
                     </ModalFooter>
                 </ModalContent>
