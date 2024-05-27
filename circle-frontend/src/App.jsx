@@ -18,7 +18,7 @@ function App() {
     <Container maxW="620px">
       <Header />
       <Routes>
-        <Route path='/' element={user ? <HomePage /> : <Navigate to="/auth" />} />
+        <Route path='/' element={<HomePage />} />
         <Route path='/auth' element={!user ? <AuthPage /> : <Navigate to="/" />} />
         <Route path='/update' element={user ? <UpdateProfilePage /> : <Navigate to="/auth" />} />
 

@@ -1,0 +1,19 @@
+.actions-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    min-width: 550px;   
+}
+
+.icons-container {
+    display: flex;
+    gap: 12px;
+}
+
+.qr-code {
+    margin-left: auto;
+}
+
+svg, img {
+    cursor: pointer;
+}
