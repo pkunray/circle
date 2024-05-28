@@ -1,10 +1,10 @@
-import Actions from "./Actions"
+ import Actions from "./Actions"
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
 import { BsThreeDots } from "react-icons/bs"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 
-function UserPost({ postImg, postTitle, likes, replies }) {
+function UserPost({ postImg, postTitle, likes, replies }) { 
     const [liked, setLiked] = useState(false);
     return (
         <Link to={"/robert/post/1"}>

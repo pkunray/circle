@@ -4,6 +4,7 @@ import { Box, Flex, Spinner } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import useShowToast from "../hooks/useShowToast";
 import postsAtom from "../atoms/postsAtom";
+import Post from "../components/Post";
 
 const HomePage = () => {
     const [currentFeed, setCurrentFeed] = useRecoilState(postsAtom);
@@ -17,13 +18,13 @@ const HomePage = () => {
             try {
                 const res = await fetch("api/posts/feed");
                 const data = await res.json();
+                console.log("fetched", data)
                 if (data.error) {
                     showToast("Error", data.error, "error");
                     return;
                 }
-                console.log("test");
-                console.log(data);
-                //setCurrentFeed(data);
+                setCurrentFeed(data);
+                console.log("current", currentFeed);
             } catch (error) {
                 showToast("Error", error.message, "Unable to Load Feed")
             } finally {
@@ -31,7 +32,7 @@ const HomePage = () => {
             }
         };
         loadFeed();
-    }, [showToast, setCurrentFeed]);
+    }, [setCurrentFeed]);
 
     return (
         <Flex className="home-page-container">
@@ -44,13 +45,9 @@ const HomePage = () => {
                         <Spinner size='xl' />
                     </Flex>
                 )}
-                
-                {/*
-                {currentFeed.map((currentFeed) => (
-                    <Post />
+                {currentFeed.length > 0 && currentFeed.map((posts) => (
+                    <Post key={posts.id_} post={posts} userID={posts.userID}  />
                 ))}
-                */}
-                
             </Box>
             <Box className="sidebar"></Box>
         </Flex>
