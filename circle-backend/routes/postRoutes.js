@@ -8,7 +8,9 @@ router.get("/feed", protectRoute, getFeedPosts);
 router.get("/:id", getPost);
 router.post("/create", protectRoute, createPost);
 router.delete("/:id", protectRoute, deletePost);
-router.post("/like/:id", protectRoute, likeUnlikePost);
-router.post("/reply/:id", protectRoute, replyToPost);
+
+//Put, we are only updating certain fields not the whole component
+router.put("/like/:id", protectRoute, likeUnlikePost);
+router.put("/reply/:id", protectRoute, replyToPost);
 
 export default router;
