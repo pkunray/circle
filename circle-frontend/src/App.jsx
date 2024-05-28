@@ -13,7 +13,6 @@ import LogoutButton from "./components/LogoutButton"
 import CreatePost from "./components/CreatePost"
 
 function App() {
-  // const [count, setCount] = useState(0)
   const user = useRecoilValue(userAtom);
   return (
     <Container maxW="620px">

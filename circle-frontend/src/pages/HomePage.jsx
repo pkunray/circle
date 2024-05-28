@@ -1,36 +1,59 @@
-import { Button, Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import "./HomePage.css";
+import React, { useEffect, useState } from "react";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
+import { useRecoilState } from "recoil";
 import useShowToast from "../hooks/useShowToast";
+import postsAtom from "../atoms/postsAtom";
 
 const HomePage = () => {
-    const [currentFeed, setCurrentFeed] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [currentFeed, setCurrentFeed] = useRecoilState(postsAtom);
+    const [loading, setLoading] = useState(true);
     const showToast = useShowToast();
 
     useEffect(() => {
-        /* Access to DB (feed) required
-        const showToast = useShowToast();
         const loadFeed = async () => {
             setLoading(true);
+            setCurrentFeed([]);
             try {
                 const res = await fetch("api/posts/feed");
-                const data = await res.json()
+                const data = await res.json();
+                if (data.error) {
+                    showToast("Error", data.error, "error");
+                    return;
+                }
+                console.log("test");
+                console.log(data);
+                //setCurrentFeed(data);
             } catch (error) {
                 showToast("Error", error.message, "Unable to Load Feed")
             } finally {
                 setLoading(false);
             }
-        }
-        */
-    }, [showToast])
+        };
+        loadFeed();
+    }, [showToast, setCurrentFeed]);
 
     return (
-        <Link to={"/roberttest"}>
-            <Flex w={"full"} justifyContent={"center"}>
-                <Button mx={"auto"}>Visit Profile Page</Button>
-            </Flex>
-        </Link>
+        <Flex className="home-page-container">
+            <Box className="home-content">
+                {!loading && currentFeed.length === 0 && (
+                    <h1 className="nothing-to-display">Nothing to display, start following someone!</h1>
+                )}
+                {loading && (
+                    <Flex className="spinner-container">
+                        <Spinner size='xl' />
+                    </Flex>
+                )}
+                
+                {/*
+                {currentFeed.map((currentFeed) => (
+                    <Post />
+                ))}
+                */}
+                
+            </Box>
+            <Box className="sidebar"></Box>
+        </Flex>
     );
 };
 
