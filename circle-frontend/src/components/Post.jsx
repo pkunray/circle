@@ -2,13 +2,19 @@ import Actions from "./Actions"
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
 import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns"
+import { useRecoilState, useRecoilValue } from "recoil"
+import DeleteIcon from "@chakra-ui/icons"
 import useShowToast from "../hooks/useShowToast"
+import userAtom from "../atoms/userAtom"
+import postsAtom from "../atoms/postsAtom"
 
 function Post({ post, userID }) {
     const [user, setUser] = useState(null);
+    const [posts, setPosts] = useRecoilState(postsAtom);
     const showToast = useShowToast();
     const navigate = useNavigate();
+    const currentUser = useRecoilValue(userAtom);
 
     //Get User and Load Profile by UserID
     useEffect(() => {
@@ -27,6 +33,29 @@ function Post({ post, userID }) {
         };
         getUser();
     }, [showToast, userID]);
+
+    const handleDeletePost = async (e) => {
+        try {
+            //Prevent default action of wrapped component: Open Link
+            e.preventDefault();
+            if (!window.confirm("Do you want to delete this post?")) {
+                return;
+            } else {
+                const res = await fetch(`/api/posts/${post._id}`, {
+                    method: "DELETE",
+                });
+                const data = await res.json();
+                if (data.error) {
+                    showToast("Error", data.error, "error");
+                    return;
+                }
+                showToast("Post delted", "Post deleted", "Post deleted");
+                setPosts(posts.filter((p) => p._id !== post._id));
+            }
+        } catch (error) {
+            showToast("Error", error.message, "error");
+        }
+    }
 
     return (
         <Link to={`/${user.username}/post/${post._id}`}>
@@ -94,8 +123,7 @@ function Post({ post, userID }) {
                                 onClick={(e) => {
                                     e.preventDefault();
                                     navigate(`/${user.username}`);
-                                }}
-                            >
+                                }}>
                                 {user?.username}
                             </Text>
                             <Image src='/verified.png' w={4} h={4} ml={1} />
