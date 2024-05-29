@@ -1,13 +1,15 @@
 import { Avatar, Box, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
+import { useColorMode } from "@chakra-ui/react";
 
 const UserHeader = () => {
+    const { colorMode } = useColorMode();
     const toast = useToast();
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
-            toast({ description: 'URL Copied!' })
+            toast({ description: 'URL Copied!' });
         });
     };
 
@@ -20,7 +22,7 @@ const UserHeader = () => {
                     </Text>
                     <Flex gap={2} alignItems={"center"}>
                         <Text fontSize={"sm"}>robert</Text>
-                        <Text fontSize={"xs"} bg={"gray.dark"} color={"gray.light"} p={1} borderRadius={"full"}>circle.net</Text>
+                        <Text fontSize={"xs"} bg={colorMode === "dark" ? "gray.dark" : "white"} color={"gray.light"} p={1} borderRadius={"full"}>circle.net</Text>
                     </Flex>
                 </Box>
                 <Box>
@@ -35,17 +37,31 @@ const UserHeader = () => {
                     <Link color={"gray.light"}>instagram.com</Link>
                 </Flex>
                 <Flex>
-                    <Box className="icon-container">
+                    <Box
+                        className="icon-container"
+                        sx={{
+                            _hover: {
+                                backgroundColor: colorMode === "dark" ? "gray.700" : "gray.200",
+                            },
+                        }}
+                    >
                         <BsInstagram size={24} cursor={"pointer"} />
                     </Box>
-                    <Box className="icon-container">
+                    <Box
+                        className="icon-container"
+                        sx={{
+                            _hover: {
+                                backgroundColor: colorMode === "dark" ? "gray.700" : "gray.200",
+                            },
+                        }}
+                    >
                         <Menu>
                             <MenuButton>
                                 <CgMoreO size={24} cursor={"pointer"} />
                             </MenuButton>
                             <Portal>
-                                <MenuList bg={"gray.dark"}>
-                                    <MenuItem bg={"gray.dark"} onClick={copyURL}>Copy Link</MenuItem>
+                                <MenuList bg={colorMode === "dark" ? "black" : "white"}>
+                                    <MenuItem bg={colorMode === "dark" ? "black" : "white"} onClick={copyURL}>Copy Link</MenuItem>
                                 </MenuList>
                             </Portal>
                         </Menu>
