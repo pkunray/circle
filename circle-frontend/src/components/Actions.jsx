@@ -1,19 +1,22 @@
 import "./Actions.css";
 import React, { useState } from "react";
-import userAtom from "../atoms/userAtom";
-import useShowToast from "../hooks/useShowToast";
+import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Flex, useDisclosure } from "@chakra-ui/react";
+import userAtom from "../atoms/userAtom";
+import postsAtom from "../atoms/postsAtom";
+import useShowToast from "../hooks/useShowToast";
 
 const Actions = ({ post: inipost }) => {
 	const user = useRecoilValue(userAtom);
 	const [liked, setLiked] = useState(inipost.likes.includes(user?.id));
 	const [post, setPost] = useState(inipost);
-	const [reply, setReply] = useState();
+	const [comment, setComment] = useState("");
 	const [qr, setQR] = useState();
+
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	const showToast = useShowToast();
 
-	//Liking functionality
+	//Liking Function
 	const handleLikePost = async () => {
 		if (!user) return showToast("Error", "Please login to like the post", "error");
 		try {
@@ -42,10 +45,25 @@ const Actions = ({ post: inipost }) => {
 		}
 	}
 
-	const handleCommentPost = async () => {
-		if (!user) return showToast("Error", "Please login to leave a comment", "error");
-		else {
-			console.log("comment");
+	//Commenting Function
+	const handleCommentPost = async (e) => {
+		if (!user) return showToast("Error", "Please login to reply", "error");
+		try {
+			const res = await fetch("/api/posts/reply/" + post._id, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ text: comment }),
+			});
+			const data = await res.json();
+			if (data.error) return showToast("Error", data.error, "error");
+			setPost({ ...post, replies: [...post.replies, data.reply] });
+			showToast("Success", "Reply posted successfully", "success");
+			onClose();
+			setComment("");
+		} catch (error) {
+			showToast("Error", error.message, "error");
 		}
 	}
 
@@ -84,8 +102,7 @@ const Actions = ({ post: inipost }) => {
 						role='img'
 						viewBox='0 0 24 22'
 						width='20'
-						onClick={handleLikePost}
-					>
+						onClick={handleLikePost}>
 						<path
 							d='M1 7.66c0 4.575 3.899 9.086 9.987 12.934.338.203.74.406 1.013.406.283 0 .686-.203 1.013-.406C19.1 16.746 23 12.234 23 7.66 23 3.736 20.245 1 16.672 1 14.603 1 12.98 1.94 12 3.352 11.042 1.952 9.408 1 7.328 1 3.766 1 1 3.736 1 7.66Z'
 							stroke='currentColor'
@@ -102,8 +119,7 @@ const Actions = ({ post: inipost }) => {
 						role='img'
 						viewBox='0 0 24 24'
 						width='20'
-						onClick={handleCommentPost}
-					>
+						onClick={onOpen}>
 						<title>Comment</title>
 						<path
 							d='M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z'
@@ -123,8 +139,7 @@ const Actions = ({ post: inipost }) => {
 						role='img'
 						viewBox='0 0 24 24'
 						width='20'
-						onClick={handleRepostPost}
-					>
+						onClick={handleRepostPost}>
 						<title>Repost</title>
 						<path
 							fill=''
@@ -141,8 +156,7 @@ const Actions = ({ post: inipost }) => {
 						role='img'
 						viewBox='0 0 24 24'
 						width='20'
-						onClick={handleSharePost}
-					>
+						onClick={handleSharePost}>
 						<title>Share</title>
 						<line
 							fill='none'
@@ -170,8 +184,7 @@ const Actions = ({ post: inipost }) => {
 					height="25px"
 					viewBox="0 0 23 23"
 					xmlns="http://www.w3.org/2000/svg"
-					onClick={handleQRPost}
-				>
+					onClick={handleQRPost}>
 					<title>QR</title>
 					<g fill="currentColor">
 						<path fill="none" d="M0 0h24v24H0z" />
@@ -179,6 +192,27 @@ const Actions = ({ post: inipost }) => {
 					</g>
 				</svg>
 			</Flex>
+
+			<Modal isOpen={isOpen} onClose={onClose}>
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader> test test test </ModalHeader>
+					<ModalCloseButton />
+					<ModalBody pb={6}>
+						<FormControl>
+							<Input placeholder='reply'
+								value={comment}
+								onChange={(e) => setComment(e.target.reply)} />
+						</FormControl>
+					</ModalBody>
+
+					<ModalFooter>
+						<Button colorScheme='blue' size={"m"} mr={3} onClick={handleCommentPost}>
+							Comment
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		</Flex>
 	);
 };
