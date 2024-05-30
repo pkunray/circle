@@ -1,20 +1,21 @@
-import Actions from "./Actions"
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
 import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { useRecoilState, useRecoilValue } from "recoil"
+import Actions from "./Actions"
 import DeleteIcon from "@chakra-ui/icons"
 import useShowToast from "../hooks/useShowToast"
 import userAtom from "../atoms/userAtom"
-import postsAtom from "../atoms/postsAtom"
+import useDeletePost from "../hooks/useHandleDeletePost"
 
 function Post({ post, userID }) {
+    //Use Custom HandleDeletePost Hook
+    const handleDeletePost = useDeletePost();
     const [user, setUser] = useState(null);
-    const [posts, setPosts] = useRecoilState(postsAtom);
+    const currentUser = useRecoilValue(userAtom);
     const showToast = useShowToast();
     const navigate = useNavigate();
-    const currentUser = useRecoilValue(userAtom);
 
     //Get User and Load Profile by UserID
     useEffect(() => {
@@ -34,28 +35,7 @@ function Post({ post, userID }) {
         getUser();
     }, [showToast, userID]);
 
-    const handleDeletePost = async (e) => {
-        try {
-            //Prevent default action of wrapped component: Open Link
-            e.preventDefault();
-            if (!window.confirm("Do you want to delete this post?")) {
-                return;
-            } else {
-                const res = await fetch(`/api/posts/${post._id}`, {
-                    method: "DELETE",
-                });
-                const data = await res.json();
-                if (data.error) {
-                    showToast("Error", data.error, "error");
-                    return;
-                }
-                showToast("Post delted", "Post deleted", "Post deleted");
-                setPosts(posts.filter((p) => p._id !== post._id));
-            }
-        } catch (error) {
-            showToast("Error", error.message, "error");
-        }
-    }
+    if (!user) return null;
 
     return (
         <Link to={`/${user.username}/post/${post._id}`}>
@@ -69,7 +49,8 @@ function Post({ post, userID }) {
                             console.log("clicke");
                             e.preventDefault();
                             navigate(`/${user.username}`);
-                        }}
+                        }
+                        }
                     />
 
                     <Box w='1px' h={"full"} bg='gray.light' my={2}></Box>
@@ -132,7 +113,7 @@ function Post({ post, userID }) {
                             <Text fontSize={"xs"} width={25} textAlign={"right"} color={"gray.light"}>
                                 {formatDistanceToNow(new Date(post.createdAt))} ago
                             </Text>
-                            {currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
+                            {currentUser?._id === user._id && <DeleteIcon size={20} onClick={(e) => { e.preventDefault(); handleDeletePost(post, user); }} />}
                         </Flex>
                     </Flex>
 
@@ -152,4 +133,4 @@ function Post({ post, userID }) {
     )
 }
 
-export default Post
+export default Post;
