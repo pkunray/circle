@@ -1,9 +1,12 @@
-import { Avatar, Box, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast } from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
+import {Link as RouterLink} from "react-router-dom";
 
 const UserHeader = () => {
+    const currentUser = useRecoilValue(userAtom);
     const toast = useToast();
+
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
@@ -41,6 +44,12 @@ const UserHeader = () => {
                 </Box>
             </Flex>
             <Text>{user.bio}</Text>
+            {currentUser._id === user._id && (
+                <Button size={"sm"}>Update your Profile</Button>
+            )}
+            {!currentUser._id === user._id && 
+                <Button size={"sm"}>Follow</Button>
+            }
             <Flex width={"full"} justifyContent={"space-between"}>
                 <Flex gap={2} alignItems={"center"}>
                     <Text color={"gray.light"}>{user.followers.lenght}</Text>
