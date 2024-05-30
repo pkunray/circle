@@ -16,21 +16,34 @@ const UserHeader = () => {
             <Flex justifyContent={"space-between"} w={"full"}>
                 <Box>
                     <Text fontSize={"2xl"} fontWeight={"bold"}>
-                        Robert Test
+                        {user.name}
                     </Text>
                     <Flex gap={2} alignItems={"center"}>
-                        <Text fontSize={"sm"}>robert</Text>
+                        <Text fontSize={"sm"}>{user.username}</Text>
                         <Text fontSize={"xs"} bg={"gray.dark"} color={"gray.light"} p={1} borderRadius={"full"}>circle.net</Text>
                     </Flex>
                 </Box>
                 <Box>
-                    <Avatar name="Robert" src="/robert-avatar.jpeg" size={"xl"} />
+                    {user.profilePic && (
+                        <Avatar
+                        name={user.name}
+                        src={user.profilePic}
+                        size={"xl"}
+                        />
+                    )}
+                    {!user.profilePic && (
+                        <Avatar
+                        name={user.name}
+                        src="https://bit.ly/broken-link"
+                        size={"xl"}
+                        />
+                    )}
                 </Box>
             </Flex>
-            <Text>CEO</Text>
+            <Text>{user.bio}</Text>
             <Flex width={"full"} justifyContent={"space-between"}>
                 <Flex gap={2} alignItems={"center"}>
-                    <Text color={"gray.light"}>5K followers</Text>
+                    <Text color={"gray.light"}>{user.followers.lenght}</Text>
                     <Box w={1} h={1} bg={"gray.light"} borderRadius={"full"}></Box>
                     <Link color={"gray.light"}>instagram.com</Link>
                 </Flex>
