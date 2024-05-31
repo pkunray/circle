@@ -1,5 +1,5 @@
-import DM from "../models/dmModel.js";
-import Message from "../models/messageModel.js";
+import { DM } from "../models/dmModel.js";
+import { Message } from "../models/messageModel.js";
 
 async function sendMessage(req, res) {
   try {
