@@ -6,10 +6,10 @@ import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import dmRoutes from "./routes/dmRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
+import { app, httpServer } from "./socket/socket.js";
 
 dotenv.config();
 connectDB();
-const app = express();
 
 const PORT = process.env.PORT || 6000;
 
@@ -29,6 +29,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/messages", dmRoutes);
 
-app.listen(PORT, () =>
+httpServer.listen(PORT, () =>
   console.log(`Server started at http://localhost:${PORT}`)
 );
