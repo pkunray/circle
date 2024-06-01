@@ -17,6 +17,7 @@ import useShowToast from "../hooks/useShowToast";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dmsAtom, selectedDMAtom } from "../atoms/dmsAtom";
 import { userAtom } from "../atoms/userAtom";
+import useSocket from "../context/SocketContext";
 
 const DMPage = () => {
   const [loadingDMs, setLadingDMs] = useState(true);
@@ -29,6 +30,7 @@ const DMPage = () => {
   const [searchText, setSearchText] = useState("");
   const [searchingUser, setSearchingUser] = useState(false);
   const currentUser = useRecoilValue(userAtom);
+  const { socket, onlineUserIds } = useSocket();
 
   useEffect(() => {
     const getDms = async () => {
@@ -174,7 +176,14 @@ const DMPage = () => {
               </Flex>
             ))}
 
-          {!loadingDMs && dms.map((dm) => <DM key={dm._id} dm={dm} />)}
+          {!loadingDMs &&
+            dms.map((dm) => (
+              <DM
+                key={dm._id}
+                isOnline={onlineUserIds.includes(dm.participants[0]._id)}
+                dm={dm}
+              />
+            ))}
         </Flex>
         {!selectedDM?._id && (
           <Flex

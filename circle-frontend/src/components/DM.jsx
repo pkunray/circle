@@ -15,7 +15,7 @@ import userAtom from "../atoms/userAtom";
 import { BsCheck2All } from "react-icons/bs";
 import { selectedDMAtom } from "../atoms/dmsAtom";
 
-const DM = (dm) => {
+const DM = (dm, isOnline) => {
   const user = dm.participants[0];
   const lastMessage = dm.lastMessage;
   const currentUser = useRecoilValue(userAtom);
@@ -60,7 +60,7 @@ const DM = (dm) => {
           }}
           src={user.profilePic}
         >
-          <AvatarBadge boxSize="1em" bg="green.500" />
+          {isOnline && <AvatarBadge boxSize="1em" bg="green.500" />}
         </Avatar>
       </WrapItem>
       <Stack direction={"column"} fontSize={"sm"}>

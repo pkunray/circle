@@ -12,6 +12,7 @@ export const useSocket = () => {
 export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const user = useRecoilValue(userAtom);
+  const [onlineUserIds, setOnlineUserIds] = useState([]);
 
   useEffect(() => {
     const socket = io("http://localhost:6000", {
@@ -20,9 +21,14 @@ export const SocketContextProvider = ({ children }) => {
       },
     });
     setSocket(socket);
+    socket.on("getOnlineUsers", (userIds) => {
+      setOnlineUserIds(userIds);
+    });
     return () => socket && socket.close();
   }, [user?._id]);
   return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={{ socket, onlineUserIds }}>
+      {children}
+    </SocketContext.Provider>
   );
 };
