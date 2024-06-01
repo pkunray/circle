@@ -32,7 +32,7 @@ const HomePage = () => {
             }
         };
         loadFeed();
-    }, [setCurrentFeed]);
+    }, [showToast, setCurrentFeed]);
 
     return (
         <Flex className="home-page-container">

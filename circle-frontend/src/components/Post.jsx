@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { useRecoilState, useRecoilValue } from "recoil"
 import Actions from "./Actions"
-import DeleteIcon from "@chakra-ui/icons"
+import { DeleteIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast"
 import userAtom from "../atoms/userAtom"
 import useDeletePost from "../hooks/useHandleDeletePost"

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { formatDistanceToNow } from "date-fns"
 import { useRecoilValue } from "recoil"
-import DeleteIcon from "@chakra-ui/icons"
+import { DeleteIcon } from "@chakra-ui/icons";
 import Comment from "../components/Comment"
 import Actions from "../components/Actions"
 import useGetUserProfile from "../hooks/useGetUserProfile"
