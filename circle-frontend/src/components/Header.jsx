@@ -16,7 +16,7 @@ const Header = () => {
           alt="logo"
           w={32}
           h={32}
-          src={colorMode === "dark" ? "/favicon.png" : "/favicon.png"}
+          src={"/favicon.png"}
           onClick={toggleColorMode}
         />
       </Flex>

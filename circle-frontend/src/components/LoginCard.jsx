@@ -1,18 +1,4 @@
-import {
-  Flex,
-  Box,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Stack,
-  Button,
-  Heading,
-  Text,
-  useColorModeValue,
-  Link,
-} from '@chakra-ui/react';
+import { Flex, Box, FormControl, FormLabel, Input, InputGroup, InputRightElement, Stack, Button, Heading, Text, useColorModeValue, Link } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useSetRecoilState } from 'recoil';
@@ -75,14 +61,18 @@ export default function LoginCard() {
           <Stack spacing={4}>
             <FormControl isRequired>
               <FormLabel>Username</FormLabel>
-              <Input type="text" value={inputs.username}
+              <Input
+                type="text"
+                value={inputs.username}
                 onChange={(e) => setInputs((inputs) => ({ ...inputs, username: e.target.value }))}
               />
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} value={inputs.password}
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  value={inputs.password}
                   onChange={(e) => setInputs((inputs) => ({ ...inputs, password: e.target.value }))}
                 />
                 <InputRightElement h={'full'}>
@@ -98,7 +88,7 @@ export default function LoginCard() {
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
-                loadingText="Submitting"
+                loadingText="Logging in"
                 size="lg"
                 bg={useColorModeValue("gray.600", "gray.700")}
                 color={'white'}

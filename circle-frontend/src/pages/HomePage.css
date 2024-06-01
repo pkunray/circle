@@ -1,0 +1,33 @@
+.home-page-container {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.home-content {
+    flex: 70;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nothing-to-display {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.sidebar {
+    flex: 30;
+}
+
+@media (max-width: 800) {
+    .sidebar {
+        display: none;
+    }
+}

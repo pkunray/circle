@@ -4,17 +4,26 @@ import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCooki
 import { v2 as cloudinary } from "cloudinary";
 
 const getUserProfile = async (req, res) => {
-    const { username } = req.params;
-    try {
-        const user = await User.findOne({ username }).select("-password").select("-updatedAt");
-        if (!user) return res.status(400).json({ error: "User not found" });
+    const { userdetails } = req.params;
 
-        res.status(200).json(user);
+    // find user by name or id
+    try {
+        const findOption = "-password -updatedAt";
+        const profile = await (mongoose.Types.ObjectId.isValid(userdetails) ?
+            User.findOne({ _id: userdetails }) :
+            User.findOne({ username: userdetails })
+        ).select(findOption);
+
+        if (!profile)
+            return res.status(404).json({ error: "Profile not found" });
+
+        res.status(200).json(profile);
+    } catch (err) {
+        const errorMessage = err.message;
+        console.log("Get Profile failed ", errorMessage);
+        res.status(500).json({ error: errorMessage });
     }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-        console.log("Error in getUserProfile: ", error.message);
-    }
+
 };
 
 const signupUser = async (req, res) => {
