@@ -9,7 +9,7 @@ import useShowToast from "../hooks/useShowToast"
 import userAtom from "../atoms/userAtom"
 import useDeletePost from "../hooks/useHandleDeletePost"
 
-function Post({ post, userID }) {
+function Post({ post, postedBy }) {
     //Use Custom HandleDeletePost Hook
     const handleDeletePost = useDeletePost();
     const [user, setUser] = useState(null);
@@ -21,7 +21,7 @@ function Post({ post, userID }) {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await fetch("/api/users/profile/" + userID);
+                const res = await fetch("/api/users/profile/" + postedBy);
                 const data = await res.json();
                 if (data.error) {
                     showToast("Error", data.error, "error");
@@ -33,7 +33,7 @@ function Post({ post, userID }) {
             }
         };
         getUser();
-    }, [showToast, userID]);
+    }, [postedBy, showToast]);
 
     if (!user) return null;
 
