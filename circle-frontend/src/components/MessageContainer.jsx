@@ -15,6 +15,7 @@ import useShowToast from "../hooks/useShowToast";
 import { useRecoilValue } from "recoil";
 import { selectedDMAtoM } from "../atoms/dmsAtom";
 import { userAtom } from "../atoms/userAtom";
+import { useSocket } from "../context/SocketContext";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
@@ -22,6 +23,42 @@ const MessageContainer = () => {
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState([]);
   const currentUser = useRecoilValue(userAtom);
+
+  const socket = useSocket();
+  const setDMs = useSetRecoilState(dmsAtom);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("newMessage", (newMessage) => {
+      if (selectedDM._id === newMessage.dmId) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+      setDMs((prevDMs) => {
+        const updatedDMs = prevDMs.map((dm) => {
+          if (dm._id === newMessage.dmId) {
+            return {
+              ...dm,
+              lastMessage: {
+                sender: newMessage.sender,
+                text: newMessage.text,
+              },
+            };
+          }
+          return dm;
+        });
+        return updatedDMs;
+      });
+    });
+    return () => {
+      // clean up: remove the event listener
+      socket.off("newMessage");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -96,11 +133,20 @@ const MessageContainer = () => {
 
         {!loadingMessages &&
           messages.map((message) => (
-            <Message
+            <Flex
               key={message._id}
-              message={message}
-              ownMessage={currentUser._id === message.sender}
-            />
+              direction={"column"}
+              ref={
+                messages.length - 1 === messages.indexOf(message)
+                  ? messagesEndRef
+                  : null
+              }
+            >
+              <Message
+                message={message}
+                ownMessage={currentUser._id === message.sender}
+              />
+            </Flex>
           ))}
       </Flex>
       <Divider />

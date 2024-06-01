@@ -1,5 +1,6 @@
 import { DM } from "../models/dmModel.js";
 import { Message } from "../models/messageModel.js";
+import { getRecipientSocketId, io } from "../socket/socket.js";
 
 async function sendMessage(req, res) {
   try {
@@ -33,6 +34,12 @@ async function sendMessage(req, res) {
       }),
       newMessage.save(),
     ]);
+
+    const recipientSocketId = getRecipientSocketId(recipientId);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("newMessage", newMessage);
+    }
+
     res.status(201).json({ newMessage });
   } catch (error) {
     res.status(500).json({ error: error.message });
