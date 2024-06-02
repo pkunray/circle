@@ -8,29 +8,30 @@ import {
   SkeletonCircle,
   Skeleton,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import useShowToast from "../hooks/useShowToast";
-import { useRecoilValue } from "recoil";
-import { selectedDMAtoM } from "../atoms/dmsAtom";
-import { userAtom } from "../atoms/userAtom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { selectedDMAtom, dmsAtom } from "../atoms/dmsAtom";
+import userAtom from "../atoms/userAtom";
 import { useSocket } from "../context/SocketContext";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
-  const selectedDM = useRecoilValue(selectedDMAtoM);
+  const selectedDM = useRecoilValue(selectedDMAtom);
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState([]);
   const currentUser = useRecoilValue(userAtom);
 
-  const socket = useSocket();
+  const { socket } = useSocket();
   const setDMs = useSetRecoilState(dmsAtom);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (!socket) return;
     socket.on("newMessage", (newMessage) => {
+      console.log(newMessage);
       if (selectedDM._id === newMessage.dmId) {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
@@ -67,7 +68,7 @@ const MessageContainer = () => {
       try {
         if (selectedDM.mock) return;
 
-        const res = fetch("/api/messages/${selectedDM.userId}");
+        const res = await fetch(`/api/messages/${selectedDM.userId}`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

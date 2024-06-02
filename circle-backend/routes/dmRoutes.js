@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post("/", protectRoute, sendMessage);
-router.get("/:otherUserId", protectRoute, getMessages);
 router.get("/dms", protectRoute, getDms);
+router.get("/:otherUserId", protectRoute, getMessages);
 
 export default router;

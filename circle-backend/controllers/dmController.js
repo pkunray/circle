@@ -18,7 +18,7 @@ async function sendMessage(req, res) {
           text: message,
         },
       });
-      await DM.create(dm);
+      await dm.save();
     }
     const newMessage = new Message({
       dmId: dm._id,
@@ -36,14 +36,16 @@ async function sendMessage(req, res) {
     ]);
 
     const recipientSocketId = getRecipientSocketId(recipientId);
+    console.log("recipientSocketId", recipientSocketId);
     if (recipientSocketId) {
       io.to(recipientSocketId).emit("newMessage", newMessage);
+      console.log("emitted newMessage event");
     }
 
     res.status(201).json({ newMessage });
   } catch (error) {
+    console.error("sendMessage", error);
     res.status(500).json({ error: error.message });
-    console.error(error);
   }
 }
 
@@ -55,20 +57,20 @@ async function getMessages(req, res) {
       participants: { $all: [currentUserId, otherUserId] },
     });
     if (!dm) {
-      return res.status(200).json([]);
+      return res.status(404).json({ error: "DM not found" });
     }
     const messages = await Message.find({ dmId: dm._id });
     res.status(200).json(messages);
   } catch (error) {
+    console.error("getMessages", error);
     res.status(500).json({ error: error.message });
-    console.error(error);
   }
 }
 
 async function getDms(req, res) {
   const currentUserId = req.user._id;
   try {
-    const dms = await DM.find({ participants: currentUserId }).popoulate({
+    const dms = await DM.find({ participants: currentUserId }).populate({
       path: "participants",
       select: "username profilePic",
     });
@@ -79,8 +81,8 @@ async function getDms(req, res) {
     });
     res.status(200).json(dms);
   } catch (error) {
+    console.error("getDms", error);
     res.status(500).json({ error: error.message });
-    console.error(error);
   }
 }
 

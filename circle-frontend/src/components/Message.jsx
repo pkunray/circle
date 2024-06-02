@@ -1,11 +1,11 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { selectedDMAtoM } from "../atoms/dmsAtom";
-import { userAtom } from "../atoms/userAtom";
+import { selectedDMAtom } from "../atoms/dmsAtom";
+import userAtom from "../atoms/userAtom";
 
 const Message = ({ ownMessage, message }) => {
-  const selectedDM = useRecoilValue(selectedDMAtoM);
+  const selectedDM = useRecoilValue(selectedDMAtom);
   const currentUser = useRecoilValue(userAtom);
   return (
     <>

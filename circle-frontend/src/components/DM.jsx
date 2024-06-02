@@ -10,12 +10,12 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { BsCheck2All } from "react-icons/bs";
 import { selectedDMAtom } from "../atoms/dmsAtom";
 
-const DM = (dm, isOnline) => {
+const DM = ({ dm, isOnline }) => {
   const user = dm.participants[0];
   const lastMessage = dm.lastMessage;
   const currentUser = useRecoilValue(userAtom);

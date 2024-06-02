@@ -11,11 +11,6 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST"],
   },
 });
-const userSocketMap = {}; // { userId: socketId }
-
-export const getRecipientSocketId = (recipientId) => {
-  return userSocketMap[recipientId];
-};
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
@@ -32,3 +27,9 @@ io.on("connection", (socket) => {
 });
 
 export { httpServer, io, app };
+
+const userSocketMap = {}; // { userId: socketId }
+
+export const getRecipientSocketId = (recipientId) => {
+  return userSocketMap[recipientId];
+};

@@ -16,11 +16,11 @@ import MessageContainer from "../components/MessageContainer";
 import useShowToast from "../hooks/useShowToast";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dmsAtom, selectedDMAtom } from "../atoms/dmsAtom";
-import { userAtom } from "../atoms/userAtom";
-import useSocket from "../context/SocketContext";
+import userAtom from "../atoms/userAtom";
+import { useSocket } from "../context/SocketContext";
 
 const DMPage = () => {
-  const [loadingDMs, setLadingDMs] = useState(true);
+  const [loadingDMs, setLoadingDMs] = useState(true);
 
   const showToast = useShowToast();
 
@@ -37,6 +37,7 @@ const DMPage = () => {
       try {
         const res = await fetch("/api/messages/dms");
         const data = await res.json();
+        console.log(data);
         if (data.error) {
           showToast("Error", data.error, "error");
           return;
@@ -45,7 +46,7 @@ const DMPage = () => {
       } catch (err) {
         showToast("Error", err.message, "error");
       } finally {
-        setLadingDMs(false);
+        setLoadingDMs(false);
       }
     };
     getDms();

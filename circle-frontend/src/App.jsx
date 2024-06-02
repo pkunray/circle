@@ -20,7 +20,6 @@ function App() {
       <Container maxW="620px">
         <Header />
         <Routes>
-          ]
           <Route
             path="/"
             element={user ? <HomePage /> : <Navigate to="/auth" />}
@@ -35,8 +34,10 @@ function App() {
             path="/update"
             element={user ? <UpdateProfilePage /> : <Navigate to="/auth" />}
           />
-          {/* todo: check user logged in, if not redirect to login page */}
-          <Route path="/dm" element={<DMPage />} />
+          <Route
+            path="/dm"
+            element={user ? <DMPage /> : <Navigate to="/auth" />}
+          />
         </Routes>
 
         {user && <CreatePost />}
