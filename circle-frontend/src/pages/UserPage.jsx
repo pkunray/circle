@@ -10,9 +10,9 @@ const UserPage = () => {
   //Use Custom GetUserProfile Hook
   const { user, loading } = useGetUserProfile();
   const { username } = useParams()
-  const [loadPosts, setLoadPosts] = useState(true);
   const [posts, setPosts] = useState([]);
   const showToast = useShowToast();
+  const [loadPosts, setLoadPosts] = useState(true);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -30,9 +30,10 @@ const UserPage = () => {
         setLoadPosts(false);
       }
     }
-    getUser();
     getPosts();
   }, [username, showToast]);
+
+  if (!user && !loading) return <h1>User not found</h1>;
 
   //Loading Spinner
   if (!user && loading) {
@@ -43,19 +44,15 @@ const UserPage = () => {
     );
   }
 
-  if (!user && !loading) return <h1>User not found</h1>;
-
   return (
     <>
       <UserHeader user={user} />
-
-      {!fetchingPosts && posts.length === 0 && <h1>User has not posts.</h1>}
-      {fetchingPosts && (
+      {!loadPosts && posts.length === 0 && <h1>User has not posts.</h1>}
+      {loadPosts && (
         <Flex justifyContent={"center"} my={12}>
           <Spinner size={"xl"} />
         </Flex>
       )}
-
       {posts.map((post) => (
         <Post key={post._id} post={post} postedBy={post.postedBy} />
       ))}
