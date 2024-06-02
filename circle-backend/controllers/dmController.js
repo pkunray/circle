@@ -42,7 +42,7 @@ async function sendMessage(req, res) {
       console.log("emitted newMessage event");
     }
 
-    res.status(201).json({ newMessage });
+    res.status(201).json(newMessage);
   } catch (error) {
     console.error("sendMessage", error);
     res.status(500).json({ error: error.message });

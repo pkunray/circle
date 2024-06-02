@@ -51,7 +51,6 @@ const DM = ({ dm, isOnline }) => {
       }
     >
       <WrapItem>
-        {/* todo: get avatar from database */}
         <Avatar
           size={{
             base: "xs",

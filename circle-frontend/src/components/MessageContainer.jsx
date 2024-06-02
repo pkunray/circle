@@ -31,7 +31,6 @@ const MessageContainer = () => {
   useEffect(() => {
     if (!socket) return;
     socket.on("newMessage", (newMessage) => {
-      console.log(newMessage);
       if (selectedDM._id === newMessage.dmId) {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
@@ -92,7 +91,7 @@ const MessageContainer = () => {
       flexDirection={"column"}
       padding={1}
     >
-      {/* message header */}
+      {/* messages header */}
       <Flex w={"full"} h={12} alignItems={"center"} gap={2}>
         <Avatar src={selectedDM.userProfilePic} size="sm" />
         <Text display={"flex"} alignItems={"center"}>
@@ -102,7 +101,7 @@ const MessageContainer = () => {
       </Flex>
       <Divider />
 
-      {/* message body */}
+      {/* messages body */}
       <Flex
         flex={1}
         flexDirection={"column"}
