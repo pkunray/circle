@@ -16,7 +16,7 @@ export const SocketContextProvider = ({ children }) => {
   const [onlineUserIds, setOnlineUserIds] = useState([]);
 
   useEffect(() => {
-    const socket = io("http://localhost:6000", {
+    const socket = io("http://localhost:9000", {
       query: {
         userId: user?._id,
       },

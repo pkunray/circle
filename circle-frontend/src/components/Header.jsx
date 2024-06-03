@@ -1,13 +1,11 @@
-import { Button, Box, Flex, Image, Link, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, Image, Link, useColorMode } from "@chakra-ui/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { AiFillHome } from "react-icons/ai";
 import { RxAvatar } from "react-icons/rx";
 import { Link as RouterLink } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
 import authScreenAtom from "../atoms/authAtom";
 import { BsFillChatQuoteFill } from "react-icons/bs";
-import { MdOutlineSettings } from "react-icons/md";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -46,6 +44,9 @@ const Header = () => {
             <Link as={RouterLink} to={`/${user.username}`}>
               <RxAvatar size={24} />
             </Link>
+            <Link as={RouterLink} to={`/dm`}>
+              <BsFillChatQuoteFill size={24} />
+            </Link>
           </Flex>
         )}
       </Flex>
@@ -55,7 +56,7 @@ const Header = () => {
         bg={colorMode === "dark" ? "white" : "black"}
         mb={12}
       ></Box>
-      // todo: add dm icon
+      {/* todo: add dm icon */}
     </>
   );
 };
