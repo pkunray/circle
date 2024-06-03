@@ -1,33 +1,17 @@
-.home-page-container {
+.select-container {
     display: flex;
-    gap: 10px;
-    align-items: flex-start;
+    justify-content: flex-end;
+    margin-bottom: 5px;
 }
 
-.home-content {
-    flex: 70;
+.dropdown-title {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: flex-end;
+    padding: 8px;   
 }
 
-.nothing-to-display {
-    text-align: center;
-    font-size: 1.5rem;
-}
-
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.sidebar {
-    flex: 30;
-}
-
-@media (max-width: 800) {
-    .sidebar {
-        display: none;
-    }
+.select-dropdown {
+    width: 100px;
+    border-radius: 4px;
+    padding: 8px;
 }
