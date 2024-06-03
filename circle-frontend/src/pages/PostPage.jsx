@@ -1,4 +1,4 @@
-import { Avatar, Flex, Text, Image, Box, Divider, Spinner } from "@chakra-ui/react"
+import { Avatar, Flex, Text, Image, Box, Divider, Spinner, Button } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { formatDistanceToNow } from "date-fns"
@@ -21,15 +21,6 @@ const PostPage = () => {
   const showToast = useShowToast();
   const currentUser = useRecoilValue(userAtom);
 
-  //Loading Spinner
-  if (!user && loading) {
-    return (
-      <Flex justifyContent={"center"}>
-        <Spinner size={"xl"} />
-      </Flex>
-    );
-  }
-
   useEffect(() => {
     const getPost = async () => {
       try {
@@ -39,6 +30,7 @@ const PostPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
+        console.log(data);
         setPost(data);
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -48,6 +40,15 @@ const PostPage = () => {
   }, [showToast, pid]);
 
   if (!post) return null;
+
+  //Loading Spinner
+  if (!user && loading) {
+    return (
+      <Flex justifyContent={"center"}>
+        <Spinner size={"xl"} />
+      </Flex>
+    );
+  }
 
   return (
     <>

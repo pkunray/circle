@@ -2,38 +2,20 @@ import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
-//Load Posts by Users in Subscribed Feed
-const getFeedPosts = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    const following = user.following;
-    const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
-    res.status(200).json({ feedPosts });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-    console.log("Feed Error:", error.message);
-  }
-};
-
 //Get Pots of Specific User
 const getUserPosts = async (req, res) => {
-  const { username } = req.params;
   try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    const posts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 });
-    //(201) ? 
-    res.status(200).json(posts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-    console.log("User Post Error:", error.message);
-  }
+		const userId = req.user._id;
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		const following = user.following;
+		const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+		res.status(200).json(feedPosts);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
 };
 
 //Get Individual Post
@@ -154,6 +136,23 @@ const replyToPost = async (req, res) => {
     res.status(500).json({ error: error.message });
     console.log("Comment Error:", error.message);
   }
-}
+};
+
+//Load Posts by Users in Subscribed Feed
+const getFeedPosts = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const following = user.following;
+    const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+    res.status(200).json( feedPosts );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log("Feed Error:", error.message);
+  }
+};
 
 export { getUserPosts, getFeedPosts, getPost, createPost, deletePost, likeUnlikePost, replyToPost };
