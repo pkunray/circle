@@ -1,4 +1,4 @@
- import "./Actions.css";
+import "./Actions.css";
 import React, { useState } from "react";
 import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue } from "recoil";

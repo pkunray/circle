@@ -55,7 +55,7 @@ function Post({ post, postedBy }) {
 
                     <Box w='1px' h={"full"} bg='gray.light' my={2}></Box>
                     <Box position={"relative"} w={"full"}>
-                        {post.replies.length === 0 && <Text textAlign={"center"}>🥱</Text>}
+                        {post.replies.length === 0 && <Text textAlign={"center"}>◯</Text>}
                         {post.replies[0] && (
                             <Avatar
                                 size='xs'
@@ -110,7 +110,7 @@ function Post({ post, postedBy }) {
                             <Image src='/verified.png' w={4} h={4} ml={1} />
                         </Flex>
                         <Flex gap={4} alignItems={"center"}>
-                            <Text fontSize={"xs"} width={25} textAlign={"right"} color={"gray.light"}>
+                            <Text fontSize={"xs"} width={100} textAlign={"right"} color={"gray.light"}>
                                 {formatDistanceToNow(new Date(post.createdAt))} ago
                             </Text>
                             {currentUser?._id === user._id && <DeleteIcon size={20} onClick={(e) => { e.preventDefault(); handleDeletePost(post, user); }} />}
