@@ -1,22 +1,24 @@
 import "./Actions.css";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, } from "@chakra-ui/react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import userAtom from "../atoms/userAtom";
-import postsAtom from "../atoms/postsAtom";
+import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
+import { useRecoilValue } from "recoil";
+import { toPng } from "html-to-image";
 import useShowToast from "../hooks/useShowToast";
+import userAtom from "../atoms/userAtom";
+import QRCode from "qrcode.react";
 
 const Actions = ({ post: inipost }) => {
 	const user = useRecoilValue(userAtom);
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [liked, setLiked] = useState(inipost.likes.includes(user?.id));
 	const [post, setPost] = useState(inipost);
 	const [comment, setComment] = useState("");
-	const [qr, setQR] = useState();
-
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const qrRef = useRef();
+	const qrCodeRef = useRef();
 	const showToast = useShowToast();
 
-	//Liking Function
+	// Liking Function
 	const handleLikePost = async () => {
 		if (!user) return showToast("Error", "Please login to like the post", "error");
 		try {
@@ -29,7 +31,7 @@ const Actions = ({ post: inipost }) => {
 			const data = await res.json();
 			if (data.error) return showToast("Error", data.error, "error");
 
-			//Update Like and Unlike Status
+			// Update Like and Unlike Status
 			if (!liked) {
 				setPost({
 					...post, likes: [...post.likes, user._id]
@@ -45,7 +47,7 @@ const Actions = ({ post: inipost }) => {
 		}
 	}
 
-	//Commenting Function
+	// Commenting Function
 	const handleCommentPost = async (e) => {
 		if (!user) return showToast("Error", "Please login to reply", "error");
 		try {
@@ -67,6 +69,7 @@ const Actions = ({ post: inipost }) => {
 		}
 	}
 
+	// Repost Function
 	const handleRepostPost = async () => {
 		if (!user) return showToast("Error", "Please login to to repost", "error");
 		else {
@@ -74,17 +77,49 @@ const Actions = ({ post: inipost }) => {
 		}
 	}
 
+	// Sharing Function
 	const handleSharePost = async () => {
 		if (!user) return showToast("Error", "Please login to share the post", "error");
-		else {
-			console.log("share");
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			showToast("Success", "Post link copied to clipboard", "success");
+		} catch (error) {
+			showToast("Error", "Failed to copy the link", "error");
 		}
 	}
 
+	// QR Functions
 	const handleQRPost = async () => {
 		if (!user) return showToast("Error", "Please login to create a QR", "error");
-		else {
-			console.log("qr");
+		try {
+			const qrData = window.location.href;
+			setPost({ ...post, qrData });
+			showToast("Success", "QR code generated!", "success");
+		} catch (error) {
+			showToast("Error", "Failed to generate QR code", "error");
+		}
+	}
+
+	const handleRemoveQR = () => {
+		setPost({ ...post, qrData: null });
+		showToast("Success", "QR code deleted!", "success");
+	}
+
+	const handleSaveQR = () => {
+		if (qrCodeRef.current) {
+			toPng(qrCodeRef.current, { pixelRatio: 1 })
+				.then((dataUrl) => {
+					const link = document.createElement('a');
+					link.href = dataUrl;
+					link.download = 'generated-qr-code.png';
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					showToast("Success", "QR code saved!", "success");
+				})
+				.catch((error) => {
+					showToast("Error", "Failed to save QR code", "error");
+				});
 		}
 	}
 
@@ -206,23 +241,34 @@ const Actions = ({ post: inipost }) => {
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent>
-					<ModalHeader> test test test </ModalHeader>
+					<ModalHeader> Leave a Comment </ModalHeader>
 					<ModalCloseButton />
 					<ModalBody pb={6}>
 						<FormControl>
-							<Input placeholder='reply'
+							<Input placeholder='your comment'
 								value={comment}
-								onChange={(e) => setComment(e.target.reply)} />
+								onChange={(e) => setComment(e.target.value)} />
 						</FormControl>
 					</ModalBody>
 
 					<ModalFooter>
-						<Button colorScheme='blue' size={"m"} mr={3} onClick={handleCommentPost}>
-							Comment
+						<Button onClick={handleCommentPost}>
+							Post
 						</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
+
+			{post.qrData && (
+				<div className="qr-container" ref={qrRef}>
+					<h1 className="qr-header"> Your Generated QR: </h1>
+					<div ref={qrCodeRef}>
+						<QRCode className="qr-code" value={post.qrData} />
+					</div>
+					<DeleteIcon className="qr-delete" onClick={handleRemoveQR} />
+					<DownloadIcon className="qr-download" onClick={handleSaveQR} />
+				</div>
+			)}
 		</Flex>
 	);
 };

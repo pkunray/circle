@@ -2,7 +2,8 @@
     display: flex;
     justify-content: space-between;
     margin: 8px 0;
-    min-width: 550px;   
+    min-width: 550px;
+    padding: 20px;
 }
 
 .icons-container {
@@ -10,10 +11,47 @@
     gap: 12px;
 }
 
-.qr-code {
-    margin-left: auto;
+.qr-header {
+    padding-left: 20px;
+    padding-right: 20px;
+
 }
 
-svg, img {
+.qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.qr-code {
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0px;
+}
+
+.qr-delete {
+    size: 50px;
+    position: absolute;
+    right: -30px;
+    cursor: pointer;
+}
+
+.qr-download {
+    size: 50px;
+    position: absolute;
+    right: -60px;
+    cursor: pointer;
+}
+
+svg,
+img {
     cursor: pointer;
 }
