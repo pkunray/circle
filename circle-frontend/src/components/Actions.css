@@ -31,7 +31,7 @@
 
 .qr-container {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     margin-top: 20px;
     position: relative;
@@ -52,14 +52,14 @@
 .qr-delete {
     size: 50px;
     position: absolute;
-    right: -30px;
+    right: 250px;
     cursor: pointer;    
 }
 
 .qr-download {
     size: 50px;
     position: absolute;
-    right: -60px;
+    right: 200px;
     cursor: pointer;
 }
 

@@ -5,17 +5,17 @@ import { v2 as cloudinary } from "cloudinary";
 //Get Pots of Specific User
 const getUserPosts = async (req, res) => {
   try {
-		const userId = req.user._id;
-		const user = await User.findById(userId);
-		if (!user) {
-			return res.status(404).json({ error: "User not found" });
-		}
-		const following = user.following;
-		const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
-		res.status(200).json(feedPosts);
-	} catch (err) {
-		res.status(500).json({ error: err.message });
-	}
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const following = user.following;
+    const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+    res.status(200).json(feedPosts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 //Get Individual Post
@@ -148,11 +148,41 @@ const getFeedPosts = async (req, res) => {
     }
     const following = user.following;
     const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
-    res.status(200).json( feedPosts );
+    res.status(200).json(feedPosts);
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log("Feed Error:", error.message);
   }
 };
 
-export { getUserPosts, getFeedPosts, getPost, createPost, deletePost, likeUnlikePost, replyToPost };
+const reportPost = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const postId = req.params.id;
+
+    if (!reason) {
+      return res.status(400).json({ error: "You need to add a reason" });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const report = { reason };
+    post.reports.push(report);
+    await post.save();
+
+    const reportsCount = post.reports.length;
+    console.log(reportsCount);
+    console.log(report);
+
+    res.status(200).json({ reportsCount, reason: report.reason });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log("Report Error:", error.message);
+  }
+};
+
+
+export { getUserPosts, getFeedPosts, getPost, createPost, deletePost, likeUnlikePost, replyToPost, reportPost };

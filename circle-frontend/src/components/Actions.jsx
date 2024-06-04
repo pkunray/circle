@@ -78,12 +78,25 @@ const Actions = ({ post: inipost }) => {
 	const handleReportPost = async (e) => {
 		if (!user) return showToast("Error", "Please login to report this post", "error");
 		try {
-			console.log("reported");
-		}
-		finally {
+			console.log(reason);
+			const res = await fetch("/api/posts/reports/" + post._id, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ reason: reason }),
+			});
+			const data = await res.json();
+			console.log(data);
+			if (data.error) return showToast("Error", data.error, "error");
+			setReason("");
+			showToast("Success", "Successfully Reported", "success");
 			isReportClose();
+		} catch (error) {
+			showToast("Error", error.message, "error");
 		}
-	}
+	};
+
 
 	// Repost Function
 	const handleRepostPost = async () => {
