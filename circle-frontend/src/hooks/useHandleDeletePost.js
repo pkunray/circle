@@ -15,7 +15,7 @@ const useDeletePost = () => {
       if (!window.confirm("Do you want to delete this post?")) {
         return;
       } else {
-        const res = await fetch(`/api/posts/${post._id}`, {
+        const res = await fetch(`/api/posts/${currentPost._id}`, {
           method: "DELETE",
         });
         const data = await res.json();
