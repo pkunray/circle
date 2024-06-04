@@ -15,10 +15,10 @@ const AVAILABLE_CHARS = 300;
 const CreatePost = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { handleImageChange, imageURL, setImageUrl } = usePreviewImg();
-    const { username } = useParams();
     const [postContent, setPostContent] = useState('');
     const [availableCharacters, setAvailableCharacters] = useState(AVAILABLE_CHARS);
     const [loading, setLoading] = useState(false);
+    const { username } = useParams();
     const [posts, setPosts] = useRecoilState(postsAtom);
 
     const user = useRecoilValue(userAtom);
@@ -79,7 +79,12 @@ const CreatePost = () => {
 
     return (
         <>
-            <Button position={"fixed"} bottom={10} right={5} bg={useColorModeValue("gray.300", "gray.dark")} onClick={onOpen} size={{ base: "sm", sm: "md" }}>
+            <Button position={"fixed"}
+                    bottom={10}
+                    right={5}
+                    bg={useColorModeValue("gray.300", "gray.dark")}
+                    onClick={onOpen}
+                    size={{ base: "sm", sm: "md" }}>
                 <AddIcon />
             </Button>
             <Modal isOpen={isOpen} onClose={onClose}>

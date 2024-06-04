@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import Post from "../models/postModel.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js";
 import { v2 as cloudinary } from "cloudinary";
@@ -168,6 +169,17 @@ const updateUser = async (req, res) => {
 
         user = await user.save();
         user.password = null;
+
+        await Post.updateMany(
+			{ "replies.userId": userId }, {
+				$set: {
+					"replies.$[reply].username": user.username,
+					"replies.$[reply].userProfilePic": user.profilePic,
+				},
+			},
+			{ arrayFilters: [{ "reply.userId": userId }] }
+		);
+
         res.status(200).json(user);
     }
     catch (error) {
