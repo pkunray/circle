@@ -41,7 +41,7 @@ const PostPage = () => {
 
   if (!post) return null;
 
-  //Loading Spinner
+  // Loading Spinner
   if (!user && loading) {
     return (
       <Flex justifyContent={"center"}>
@@ -63,7 +63,7 @@ const PostPage = () => {
           </Flex>
         </Flex>
         <Flex gap={4} alignItems={"center"}>
-          <Text fontSize={"xs"} width={25} textAlign={"right"} color={"gray.light"}>
+          <Text fontSize={"xs"} width={100} textAlign={"right"} color={"gray.light"}>
             {formatDistanceToNow(new Date(post.createdAt))} ago
           </Text>
           {currentUser?._id === user._id && <DeleteIcon size={20}
@@ -93,6 +93,7 @@ const PostPage = () => {
       </Flex>
 
       <Divider my={4} />
+      
       {post.replies.map((reply) => (
         <Comment key={reply._id} reply={reply} />
       ))}

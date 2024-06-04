@@ -1,10 +1,22 @@
-.actions-container {
+.action-container {
     display: flex;
     justify-content: space-between;
-    margin: 8px 0;
-    min-width: 550px;
-    padding: 20px;
+    padding-right: 20px;
+    gap: 25px;
+    width: 600px;
+    height: 30px;
 }
+
+.base-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.other-actions {
+    display: flex;
+    gap: 10px;
+}
+
 
 .icons-container {
     display: flex;
@@ -41,7 +53,7 @@
     size: 50px;
     position: absolute;
     right: -30px;
-    cursor: pointer;
+    cursor: pointer;    
 }
 
 .qr-download {
@@ -54,4 +66,12 @@
 svg,
 img {
     cursor: pointer;
+}
+
+svg:hover {
+    width: 25px;
+    height: 25px;
+    /* border: 2px solid rgb(255, 255, 255); */
+    /*box-shadow: 0px 0px 5px rgb(170, 170, 170); */
+    border-radius: 3px;
 }
