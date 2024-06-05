@@ -151,7 +151,6 @@ const MessageContainer = () => {
       </Flex>
       <Divider />
 
-      {/* pass setMessages function, when new message is sent, put it into the messages */}
       <MessageInput setMessages={setMessages} />
     </Flex>
   );
