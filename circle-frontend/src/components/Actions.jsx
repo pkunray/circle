@@ -1,6 +1,6 @@
 import "./Actions.css";
 import React, { useState, useRef } from "react";
-import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { toPng } from "html-to-image";
@@ -11,16 +11,12 @@ import QRCode from "qrcode.react";
 
 const Actions = ({ post }) => {
 	const user = useRecoilValue(userAtom);
-
 	const { isOpen: isComment, onOpen: isCommentOpen, onClose: isCommentClose } = useDisclosure();
 	const { isOpen: isReport, onOpen: isReportOpen, onClose: isReportClose } = useDisclosure();
-
 	const [liked, setLiked] = useState(post.likes.includes(user?.id));
 	const [posts, setPosts] = useRecoilState(postsAtom);
-
 	const [comment, setComment] = useState("");
 	const [reason, setReason] = useState("");
-
 	const qrRef = useRef();
 	const qrCodeRef = useRef();
 	const showToast = useShowToast();
@@ -35,37 +31,24 @@ const Actions = ({ post }) => {
 					"Content-Type": "application/json",
 				},
 			});
-
 			const data = await res.json();
 			if (data.error) return showToast("Error", data.error, "error");
 
-			// Update Like and Unlike Status
-			if (!liked) {
-				const updatedPosts = posts.map((p) => {
-					if (p._id === posts._id) {
-						return { ...p, likes: [...p.likes, user._id] };
-					}
-					return p;
-				});
-				setPosts(updatedPosts);
-			} else {
-				const updatedPosts = posts.map((p) => {
-					if (p._id === posts._id) {
-						return { ...p, likes: p.likes.filter((id) => id !== user._id) };
-					}
-					return p;
-				});
-				setPosts(updatedPosts);
-			}
+			const updatedPosts = posts.map((p) => {
+				if (p._id === post._id) {
+					return liked ? { ...p, likes: p.likes.filter((id) => id !== user._id) } : { ...p, likes: [...p.likes, user._id] };
+				}
+				return p;
+			});
+			setPosts(updatedPosts);
 			setLiked(!liked);
 		} catch (error) {
-			//.map error
 			showToast("Error", error.message, "error");
 		}
-	}
+	};
 
-	// Commenting Function
-	const handleCommentPost = async (e) => {
+	// Comment Function
+	const handleCommentPost = async () => {
 		if (!user) return showToast("Error", "Please login to reply", "error");
 		try {
 			const res = await fetch("/api/posts/reply/" + post._id, {
@@ -75,7 +58,6 @@ const Actions = ({ post }) => {
 				},
 				body: JSON.stringify({ text: comment }),
 			});
-
 			const data = await res.json();
 			if (data.error) return showToast("Error", data.error, "error");
 
@@ -87,17 +69,17 @@ const Actions = ({ post }) => {
 			});
 			setPosts(updatedPosts);
 			showToast("Success", "Reply posted successfully", "success");
-			onClose();
+			isCommentClose();
 			setComment("");
 		} catch (error) {
 			showToast("Error", error.message, "error");
 		}
-	}
+	};
 
-	const handleReportPost = async (e) => {
+	// Report Function
+	const handleReportPost = async () => {
 		if (!user) return showToast("Error", "Please login to report this post", "error");
 		try {
-			console.log(reason);
 			const res = await fetch("/api/posts/reports/" + post._id, {
 				method: "PUT",
 				headers: {
@@ -106,7 +88,6 @@ const Actions = ({ post }) => {
 				body: JSON.stringify({ reason: reason }),
 			});
 			const data = await res.json();
-			console.log(data);
 			if (data.error) return showToast("Error", data.error, "error");
 			setReason("");
 			showToast("Success", "Successfully Reported", "success");
@@ -116,16 +97,13 @@ const Actions = ({ post }) => {
 		}
 	};
 
-
 	// Repost Function
 	const handleRepostPost = async () => {
 		if (!user) return showToast("Error", "Please login to to repost", "error");
-		else {
-			console.log("reposted");
-		}
-	}
+		console.log("reposted");
+	};
 
-	// Sharing Function
+	// Share Function
 	const handleSharePost = async () => {
 		if (!user) return showToast("Error", "Please login to share the post", "error");
 		try {
@@ -134,24 +112,33 @@ const Actions = ({ post }) => {
 		} catch (error) {
 			showToast("Error", "Failed to copy the link", "error");
 		}
-	}
+	};
 
 	// QR Functions
 	const handleQRPost = async () => {
-		if (!user) return showToast("Error", "Please login to create a QR", "error");
-		try {
-			const qrData = window.location.href;
-			setPosts({ ...post, qrData });
-			showToast("Success", "QR code generated!", "success");
-		} catch (error) {
-			showToast("Error", "Failed to generate QR code", "error");
+		if (!user) {
+			showToast("Error", "Please login to create a QR", "error");
+			return;
 		}
-	}
+
+		if (!post.qrData) {
+			try {
+				const qrData = window.location.href;
+				setPosts(posts.map((p) => (p._id === post._id ? { ...p, qrData } : p)));
+				showToast("Success", "QR code generated!", "success");
+				showToast("Info", "Select Post to view", "info");
+			} catch (error) {
+				showToast("Error", "Failed to generate QR code", "error");
+			}
+		} else {
+			showToast("Info", "QR code already generated for this post", "info");
+		}
+	};
 
 	const handleRemoveQR = () => {
-		setPosts({ ...post, qrData: null });
+		setPosts(posts.map((p) => (p._id === post._id ? { ...p, qrData: null } : p)));
 		showToast("Success", "QR code deleted!", "success");
-	}
+	};
 
 	const handleDownloadQR = () => {
 		if (qrCodeRef.current) {
@@ -169,7 +156,7 @@ const Actions = ({ post }) => {
 					showToast("Error", "Failed to save QR code", "error");
 				});
 		}
-	}
+	};
 
 	return (
 		<Flex flexDirection='column'>
@@ -178,15 +165,7 @@ const Actions = ({ post }) => {
 					<div className="base-actions">
 
 						{/* Liking */}
-						<svg
-							aria-label='Like'
-							color={liked ? "rgb(237, 73, 86)" : ""}
-							fill={liked ? "rgb(237, 73, 86)" : "transparent"}
-							height='20'
-							width='20'
-							role='img'
-							viewBox='0 0 24 22'
-							onClick={handleLikePost}>
+						<svg aria-label='Like' color={liked ? "rgb(237, 73, 86)" : ""} fill={liked ? "rgb(237, 73, 86)" : "transparent"} height='20' width='20' role='img' viewBox='0 0 24 22' onClick={handleLikePost}>
 							<path
 								d='M1 7.66c0 4.575 3.899 9.086 9.987 12.934.338.203.74.406 1.013.406.283 0 .686-.203 1.013-.406C19.1 16.746 23 12.234 23 7.66 23 3.736 20.245 1 16.672 1 14.603 1 12.98 1.94 12 3.352 11.042 1.952 9.408 1 7.328 1 3.766 1 1 3.736 1 7.66Z'
 								stroke='currentColor'
@@ -195,15 +174,7 @@ const Actions = ({ post }) => {
 						</svg>
 
 						{/* Commenting */}
-						<svg
-							aria-label='Comment'
-							color=''
-							fill=''
-							height='20'
-							width='20'
-							role='img'
-							viewBox='0 0 24 24'
-							onClick={isCommentOpen}>
+						<svg aria-label='Comment' color='currentcolor' fill='currentcolor' height='20' width='20' role='img' viewBox='0 0 24 24' onClick={isCommentOpen}>
 							<title>Comment</title>
 							<path
 								d='M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z'
@@ -215,15 +186,7 @@ const Actions = ({ post }) => {
 						</svg>
 
 						{/* Reposting */}
-						<svg
-							aria-label='Repost'
-							color='currentColor'
-							fill='currentColor'
-							height='20'
-							width='20'
-							role='img'
-							viewBox='0 0 24 24'
-							onClick={handleRepostPost}>
+						<svg aria-label='Repost' color='currentColor' fill='currentColor' height='20' width='20' role='img' viewBox='0 0 24 24' onClick={handleRepostPost}>
 							<title>Repost</title>
 							<path
 								fill=''
@@ -232,15 +195,7 @@ const Actions = ({ post }) => {
 						</svg>
 
 						{/* Sharing */}
-						<svg
-							aria-label='Share'
-							color=''
-							fill='rgb(243, 245, 247)'
-							height='20'
-							width='20'
-							role='img'
-							viewBox='0 0 24 24'
-							onClick={handleSharePost}>
+						<svg aria-label='Share' color='currentColor' fill='rgb(243, 245, 247)' height='20' width='20' role='img' viewBox='0 0 24 24' onClick={handleSharePost}>
 							<title>Share</title>
 							<line
 								fill='none'
@@ -262,25 +217,13 @@ const Actions = ({ post }) => {
 						</svg>
 
 						{/* Report */}
-						<svg
-							width="22"
-							height="22"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-							onClick={isReportOpen}>
+						<svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onClick={isReportOpen}>
 							<title>Report</title>
 							<path d="M12 16.99V17M12 7V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 						</svg>
-					</div>
 
-					<div className="other-actions">
 						{/* Generate QR */}
-						<svg
-							width="23px"
-							height="23px"
-							viewBox="0 0 23 23"
-							xmlns="http://www.w3.org/2000/svg"
-							onClick={handleQRPost}>
+						<svg width="23px" height="23px" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg" onClick={handleQRPost}>
 							<title>QR</title>
 							<g fill="currentColor">
 								<path fill="none" d="M0 0h24v24H0z" />
@@ -291,6 +234,19 @@ const Actions = ({ post }) => {
 				</div>
 			</Flex>
 
+			{/* QR Display */}
+			{post.qrData && (
+				<div className="qr-container" ref={qrRef}>
+					<h1 className="qr-header"> Your Generated QR: </h1>
+					<div ref={qrCodeRef}>
+						<QRCode className="qr-code" value={post.qrData} />
+					</div>
+					<DeleteIcon className="qr-delete" onClick={handleRemoveQR} />
+					<DownloadIcon className="qr-download" onClick={handleDownloadQR} />
+				</div>
+			)}
+
+			{/* Like and Comment amount Display */}
 			<Flex gap={2} alignItems={"center"}>
 				<Text color={"gray.light"} fontSize='sm'>
 					{post.replies.length} replies
@@ -309,16 +265,12 @@ const Actions = ({ post }) => {
 					<ModalCloseButton />
 					<ModalBody pb={6}>
 						<FormControl>
-							<Input placeholder='your comment'
-								value={comment}
-								onChange={(e) => setComment(e.target.value)} />
+							<Input placeholder='your comment' value={comment} onChange={(e) => setComment(e.target.value)} />
 						</FormControl>
 					</ModalBody>
 
 					<ModalFooter>
-						<Button onClick={handleCommentPost}>
-							Post
-						</Button>
+						<Button onClick={handleCommentPost}>Post</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
@@ -331,31 +283,15 @@ const Actions = ({ post }) => {
 					<ModalCloseButton />
 					<ModalBody pb={6}>
 						<FormControl>
-							<Input placeholder='report reason'
-								value={reason}
-								onChange={(e) => setReason(e.target.value)} />
+							<Input placeholder='report reason' value={reason} onChange={(e) => setReason(e.target.value)} />
 						</FormControl>
 					</ModalBody>
 
 					<ModalFooter>
-						<Button onClick={handleReportPost}>
-							Send
-						</Button>
+						<Button onClick={handleReportPost}>Send</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
-
-			{/* QR Display */}
-			{posts.qrData && (
-				<div className="qr-container" ref={qrRef}>
-					<h1 className="qr-header"> Your Generated QR: </h1>
-					<div ref={qrCodeRef}>
-						<QRCode className="qr-code" value={post.qrData} />
-					</div>
-					<DeleteIcon className="qr-delete" onClick={handleRemoveQR} />
-					<DownloadIcon className="qr-download" onClick={handleDownloadQR} />
-				</div>
-			)}
 		</Flex>
 	);
 };

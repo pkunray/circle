@@ -3,7 +3,7 @@
     justify-content: space-between;
     padding-right: 20px;
     gap: 25px;
-    width: 600px;
+    width: 100%;
     height: 30px;
 }
 
@@ -15,8 +15,8 @@
 .other-actions {
     display: flex;
     gap: 10px;
+    margin-left: auto;
 }
-
 
 .icons-container {
     display: flex;
@@ -26,11 +26,11 @@
 .qr-header {
     padding-left: 20px;
     padding-right: 20px;
-
 }
 
 .qr-container {
     display: flex;
+    flex-direction: row;
     justify-content: left;
     align-items: center;
     margin-top: 20px;
@@ -51,16 +51,16 @@
 
 .qr-delete {
     size: 50px;
-    position: absolute;
-    right: 250px;
-    cursor: pointer;    
+    position: right;
+    cursor: pointer;
+    margin: 20px;
 }
 
 .qr-download {
     size: 50px;
-    position: absolute;
-    right: 200px;
+    position: right;
     cursor: pointer;
+    margin: 20px;
 }
 
 svg,
@@ -68,10 +68,8 @@ img {
     cursor: pointer;
 }
 
-svg:hover {
+.action-container svg:hover {
     width: 25px;
     height: 25px;
-    /* border: 2px solid rgb(255, 255, 255); */
-    /*box-shadow: 0px 0px 5px rgb(170, 170, 170); */
     border-radius: 3px;
 }
