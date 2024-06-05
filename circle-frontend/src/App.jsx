@@ -1,5 +1,4 @@
-import { Box, Container } from "@chakra-ui/react";
-import { useState } from "react";
+import { Container, Box } from "@chakra-ui/react";
 import UserPage from "./pages/UserPage";
 import PostPage from "./pages/PostPage";
 import { Route, Routes, Navigate } from "react-router-dom";
@@ -7,11 +6,10 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import AuthPage from "./pages/AuthPage";
-import DMPage from "./pages/DMPage";
 import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
-import LogoutButton from "./components/LogoutButton";
 import CreatePost from "./components/CreatePost";
+import DMPage from "./pages/DMPage";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -54,9 +52,6 @@ function App() {
 
           <Route path="/:username/post/:pid" element={<PostPage />} />
         </Routes>
-
-        {user && <CreatePost />}
-        {user && <LogoutButton />}
       </Container>
     </Box>
   );

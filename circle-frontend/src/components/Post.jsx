@@ -8,12 +8,14 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast"
 import userAtom from "../atoms/userAtom"
 import useDeletePost from "../hooks/useHandleDeletePost"
+import postsAtom from "../atoms/postsAtom"
 
 function Post({ post, postedBy }) {
     //Use Custom HandleDeletePost Hook
     const handleDeletePost = useDeletePost();
     const [user, setUser] = useState(null);
     const currentUser = useRecoilValue(userAtom);
+    const [posts, setPosts] = useRecoilState(postsAtom);
     const showToast = useShowToast();
     const navigate = useNavigate();
 
@@ -55,7 +57,7 @@ function Post({ post, postedBy }) {
 
                     <Box w='1px' h={"full"} bg='gray.light' my={2}></Box>
                     <Box position={"relative"} w={"full"}>
-                        {post.replies.length === 0 && <Text textAlign={"center"}>🥱</Text>}
+                        {post.replies.length === 0 && <Text textAlign={"center"}>◯</Text>}
                         {post.replies[0] && (
                             <Avatar
                                 size='xs'
@@ -110,7 +112,7 @@ function Post({ post, postedBy }) {
                             <Image src='/verified.png' w={4} h={4} ml={1} />
                         </Flex>
                         <Flex gap={4} alignItems={"center"}>
-                            <Text fontSize={"xs"} width={25} textAlign={"right"} color={"gray.light"}>
+                            <Text fontSize={"xs"} width={100} textAlign={"right"} color={"gray.light"}>
                                 {formatDistanceToNow(new Date(post.createdAt))} ago
                             </Text>
                             {currentUser?._id === user._id && <DeleteIcon size={20} onClick={(e) => { e.preventDefault(); handleDeletePost(post, user); }} />}

@@ -1,33 +1,29 @@
-.home-page-container {
+.header-container {
     display: flex;
-    gap: 10px;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
-.home-content {
-    flex: 70;
+.select-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
-.nothing-to-display {
-    text-align: center;
-    font-size: 1.5rem;
+.dropdown-title {
+    margin-right: 8px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+.select-dropdown {
+    width: 200px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    padding: 8px;
 }
 
-.sidebar {
-    flex: 30;
-}
-
-@media (max-width: 800) {
-    .sidebar {
-        display: none;
-    }
+.counter-container {
+    font-size: 16px;
+    font-weight: bold;
 }

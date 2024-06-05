@@ -5,13 +5,15 @@ import UserHeader from "../components/UserHeader"
 import useShowToast from "../hooks/useShowToast";
 import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
+import { useRecoilState } from "recoil";
+import postsAtom from "../atoms/postsAtom";
 
 const UserPage = () => {
   //Use Custom GetUserProfile Hook
   const { user, loading } = useGetUserProfile();
   const { username } = useParams()
-  const [posts, setPosts] = useState([]);
   const showToast = useShowToast();
+  const [posts, setPosts] = useRecoilState(postsAtom);
   const [loadPosts, setLoadPosts] = useState(true);
 
   useEffect(() => {
@@ -31,7 +33,8 @@ const UserPage = () => {
       }
     }
     getPosts();
-  }, [username, showToast]);
+
+  }, [username, showToast, setPosts]);
 
   if (!user && !loading) return <h1>User not found</h1>;
 
