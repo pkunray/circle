@@ -9,7 +9,7 @@ import useShowToast from "../hooks/useShowToast";
 const Actions = ({ post }) => {
 	const user = useRecoilValue(userAtom);
 	const [liked, setLiked] = useState(post.likes.includes(user?.id));
-	const [post, setPost] = useRecoilState(postsAtom);
+	const [posts, setPosts] = useRecoilState(postsAtom);
 	const [comment, setComment] = useState("");
 	const [qr, setQR] = useState();
 
