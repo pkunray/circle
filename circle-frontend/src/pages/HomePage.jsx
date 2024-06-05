@@ -2,49 +2,78 @@ import { Flex, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import Post from "../components/Post";
-import postsAtom from "../atoms/postsAtom";
+import "./HomePage.css";
 
 const HomePage = () => {
-	const [posts, setPosts] = useRecoilState(postsAtom);
-	const [loading, setLoading] = useState(true);
-	const showToast = useShowToast();
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState('newest');
+    const showToast = useShowToast();
 
-	useEffect(() => {
-		const getFeedPosts = async () => {
-			setLoading(true);
-			setPosts([]);
-			try {
-				const res = await fetch("/api/posts/feed");
-				const data = await res.json();
-				if (data.error) {
-					showToast("Error", data.error, "error");
-					return;
-				}
-				console.log(data);
-				setPosts(data);
-			} catch (error) {
-				showToast("Error", error.message, "error");
-			} finally {
-				setLoading(false);
-			}
-		};
-		getFeedPosts();
-	}, [showToast, setPosts]);
+    const handleFilterChange = (e) => {
+        setFilter(e.target.value);
+    };
 
-	return (
-		<>
-			{!loading && posts.length === 0 && <h1> test test test </h1>}
-			{loading && (
-				<Flex justify='center'>
-					<Spinner size='xl' />
-				</Flex>
-			)}
+    const filteredPosts = () => {
+        if (filter === 'oldest') {
+            return posts.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        } else if (filter === 'newest') {
+            return posts.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else if (filter === 'likes') {
+            return posts.slice().sort((a, b) => b.likes.length - a.likes.length);
+        }
+        return posts;
+    };
 
-			{posts.map((post) => (
-				<Post key={post._id} post={post} postedBy={post.postedBy} />
-			))}
-		</>
-	);
+    useEffect(() => {
+        const getFeedPosts = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch("/api/posts/feed");
+                const data = await res.json();
+                if (data.error) {
+                    showToast("Error", data.error, "error");
+                    return;
+                }
+                console.log(data);
+                setPosts(data);
+            } catch (error) {
+                showToast("Error", error.message, "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        getFeedPosts();
+    }, [showToast]);
+
+    return (
+        <>
+            <div className="header-container">
+                <div className="select-container">
+                    <h1 className="dropdown-title">Sort Posts:</h1>
+                    <select value={filter} onChange={handleFilterChange} className="select-dropdown">
+                        <option value="oldest">Oldest</option>
+                        <option value="newest">Newest</option>
+                        <option value="likes">Likes</option>
+                    </select>
+                </div>
+                <div className="counter-container">
+                    <span>Total Posts: {filteredPosts().length}</span>
+                </div>
+            </div>
+
+            {!loading && posts.length === 0 && <h1>test test test</h1>}
+            {loading && (
+                <Flex justify='center'>
+                    <Spinner size='xl' />
+                </Flex>
+            )}
+
+            {filteredPosts().map((post) => (
+                <Post key={post._id} post={post} postedBy={post.postedBy} />
+            ))}
+        </>
+    );
 };
 
 export default HomePage;

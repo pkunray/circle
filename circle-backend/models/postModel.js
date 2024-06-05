@@ -39,6 +39,15 @@ const postSchema = mongoose.Schema(
 				},
 			},
 		],
+		reports: [
+			{
+				reason: {
+					type: String,
+					maxLength: 100,
+					required: true,
+				},
+			},
+		],
 	},
 	{
 		timestamps: true,
