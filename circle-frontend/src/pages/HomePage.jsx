@@ -62,7 +62,10 @@ const HomePage = () => {
                 </div>
             </div>
 
-            {!loading && posts.length === 0 && <h1>test test test</h1>}
+            <div style={{ textAlign: 'center' }}>
+                {!loading && posts.length === 0 && <h1>Follow some users to see the feed.</h1>}
+            </div>
+
             {loading && (
                 <Flex justify='center'>
                     <Spinner size='xl' />

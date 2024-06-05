@@ -14,6 +14,10 @@ const UserHeader = (user) => {
     const showToast = useShowToast();
     const [updating, setUpdating] = useState(false);
 
+    if (!currentUser) {
+        return null;
+    }
+
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
@@ -42,10 +46,10 @@ const UserHeader = (user) => {
             }
 
             if (following) {
-                showToast("User unfollowed!", `Unfollowed &{user.name}`, "success");
+                showToast("User unfollowed!", `Unfollowed ${user.name}`, "success");
                 user.followers.pop();
             } else {
-                showToast("User followed!", `Followed &{user.name}`, "success");
+                showToast("User followed!", `Followed ${user.name}`, "success");
                 user.followers.push(currentUser._id);
             }
             setFollowing(!following);
@@ -100,8 +104,8 @@ const UserHeader = (user) => {
             <Flex width={"full"} justifyContent={"space-between"}>
                 <Flex gap={2} alignItems={"center"}>
                     {/*
-                     <Text color={"gray.light"}>{user.followers.lenght}</Text> 
-                    */}
+                        <Text color={"gray.light"}>{user.followers.lenght}</Text> 
+                        */}
                     <Box w={1} h={1} bg={"gray.light"} borderRadius={"full"}></Box>
                     <Link color={"gray.light"}>instagram.com</Link>
                 </Flex>

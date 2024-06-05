@@ -87,16 +87,6 @@ const PostPage = () => {
 
       <Divider my={4} />
 
-      {/*
-      <Flex justifyContent={"space-between"}>
-        <Flex gap={2} alignItems={"center"}>
-          <Text fontSize={"2xl"}>test</Text>
-          <Text color={"gray.light"}>test test test</Text>
-        </Flex>
-        <Button>Get</Button>
-      </Flex>
-      */}
-      
       <Divider my={4} />
       {currentPost.replies.map((reply) => (
         <Comment key={reply._id} reply={reply} />
