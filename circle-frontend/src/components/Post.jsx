@@ -8,12 +8,14 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast"
 import userAtom from "../atoms/userAtom"
 import useDeletePost from "../hooks/useHandleDeletePost"
+import postsAtom from "../atoms/postsAtom"
 
 function Post({ post, postedBy }) {
     //Use Custom HandleDeletePost Hook
     const handleDeletePost = useDeletePost();
     const [user, setUser] = useState(null);
     const currentUser = useRecoilValue(userAtom);
+    const [posts, setPosts] = useRecoilState(postsAtom);
     const showToast = useShowToast();
     const navigate = useNavigate();
 

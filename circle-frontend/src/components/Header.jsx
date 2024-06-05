@@ -8,11 +8,13 @@ import { FiLogOut } from "react-icons/fi";
 import authScreenAtom from "../atoms/authAtom";
 import { BsFillChatQuoteFill } from "react-icons/bs";
 import { MdOutlineSettings } from "react-icons/md";
+import useLogout from "../hooks/useLogout";
 
 const Header = () => {
     const { colorMode, toggleColorMode } = useColorMode();
     const user = useRecoilValue(userAtom);
     const setAuthScreen = useSetRecoilState(authScreenAtom);
+    const logout = useLogout();
 
     return (
         <>
@@ -42,7 +44,15 @@ const Header = () => {
                         <Link as={RouterLink} to={`/${user.username}`}>
                             <RxAvatar size={24} />
                         </Link>
+                        <Button size="xm">
+                            <FiLogOut size={20} onClick={logout}/>
+                        </Button>
                     </Flex>
+                )}
+                {!user && (
+                    <Link as={RouterLink} to={"/auth"} onClick={() => setAuthScreen("signup")}>
+                        Sign up
+                    </Link>
                 )}
             </Flex>
             <Box w="100%" h="2px" bg={colorMode === "dark" ? "white" : "black"} mb={12}></Box>
