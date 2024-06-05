@@ -2,15 +2,15 @@ import { Avatar, Flex, Text, Image, Box, Divider, Spinner, Button } from "@chakr
 import { useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { formatDistanceToNow } from "date-fns"
-import { useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { DeleteIcon } from "@chakra-ui/icons";
 import Comment from "../components/Comment"
 import Actions from "../components/Actions"
 import useGetUserProfile from "../hooks/useGetUserProfile"
 import useShowToast from "../hooks/useShowToast"
 import userAtom from "../atoms/userAtom"
-import useDeletePost from "../hooks/useHandleDeletePost"
 import postsAtom from "../atoms/postsAtom"
+import useDeletePost from "../hooks/useHandleDeletePost"
 
 const PostPage = () => {
   //Use Custom GetUserProfile Hook
@@ -18,7 +18,7 @@ const PostPage = () => {
   //Use Custom HandleDeletePost Hook
   const handleDeletePost = useDeletePost();
   const { pid } = useParams();
-  const [post, setPost] = useRecoilState(postsAtom);
+  const [posts, setPosts] = useRecoilState(postsAtom);
   const showToast = useShowToast();
   const currentUser = useRecoilValue(userAtom);
   const currentPost = posts[0];
@@ -66,12 +66,12 @@ const PostPage = () => {
           </Flex>
         </Flex>
         <Flex gap={4} alignItems={"center"}>
-          <Text fontSize={"xs"} width={25} textAlign={"right"} color={"gray.light"}>
+          <Text fontSize={"xs"} width={100} textAlign={"right"} color={"gray.light"}>
             {formatDistanceToNow(new Date(currentPost.createdAt))} ago
           </Text>
           {currentUser?._id === user._id && <DeleteIcon size={20}
             cursor={"pointer"}
-            onClick={(e) => { e.preventDefault(); handleDeletePost(post, user); }} />}
+            onClick={(e) => { e.preventDefault(); handleDeletePost(posts, user); }} />}
         </Flex>
       </Flex>
 
@@ -87,6 +87,7 @@ const PostPage = () => {
 
       <Divider my={4} />
 
+      {/*
       <Flex justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"}>
           <Text fontSize={"2xl"}>test</Text>
@@ -94,7 +95,8 @@ const PostPage = () => {
         </Flex>
         <Button>Get</Button>
       </Flex>
-
+      */}
+      
       <Divider my={4} />
       {currentPost.replies.map((reply) => (
         <Comment key={reply._id} reply={reply} />

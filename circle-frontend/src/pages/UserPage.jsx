@@ -5,7 +5,7 @@ import UserHeader from "../components/UserHeader"
 import useShowToast from "../hooks/useShowToast";
 import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import { useRecoilState } from `recoil`;
+import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
 
 const UserPage = () => {
