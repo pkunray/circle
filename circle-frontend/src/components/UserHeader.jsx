@@ -6,13 +6,12 @@ import { useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
+import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
-const UserHeader = (user) => {
+const UserHeader = ({user}) => {
     const currentUser = useRecoilValue(userAtom);
     const toast = useToast();
-    //const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
-    const showToast = useShowToast();
-    const [updating, setUpdating] = useState(false);
+    const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
 
     if (!currentUser) {
         return null;
@@ -25,41 +24,6 @@ const UserHeader = (user) => {
         });
     };
 
-    const handleFollowUnfollow = async () => {
-        if (!currentUser) {
-            showToast("Error", "Login to follow", "error")
-            return;
-        }
-        if (updating) return;
-        setUpdating(true);
-        try {
-            const res = await fetch(`/api/users/follow/${user._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            const data = await res.json();
-            if (data.error) {
-                showToast("Error", data.error, "error")
-                return;
-            }
-
-            if (following) {
-                showToast("User unfollowed!", `Unfollowed ${user.name}`, "success");
-                user.followers.pop();
-            } else {
-                showToast("User followed!", `Followed ${user.name}`, "success");
-                user.followers.push(currentUser._id);
-            }
-            setFollowing(!following);
-
-        } catch (error) {
-            showToast("Error", error, "error");
-        } finally {
-            setUpdating(false);
-        };
-    };
 
     return (
         <VStack gap={4} alignItems={"start"}>
@@ -103,9 +67,7 @@ const UserHeader = (user) => {
             }
             <Flex width={"full"} justifyContent={"space-between"}>
                 <Flex gap={2} alignItems={"center"}>
-                    {/*
-                        <Text color={"gray.light"}>{user.followers.lenght}</Text> 
-                        */}
+                    <Text color={"gray.light"}>{user.followers.lenght}</Text> 
                     <Box w={1} h={1} bg={"gray.light"} borderRadius={"full"}></Box>
                     <Link color={"gray.light"}>instagram.com</Link>
                 </Flex>
