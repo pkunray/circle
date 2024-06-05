@@ -20,6 +20,7 @@ const LogoutButton = () => {
             const data = await res.json();
             if (data.error) {
                 showToast("Error", data.error, "error");
+                return;
             } else {
                 localStorage.removeItem("user-circle");
                 setUser(null);

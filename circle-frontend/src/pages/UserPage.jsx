@@ -12,9 +12,8 @@ const UserPage = () => {
   //Use Custom GetUserProfile Hook
   const { user, loading } = useGetUserProfile();
   const { username } = useParams()
-  //const [posts, setPosts] = useState([]);
   const showToast = useShowToast();
-  const [post, setPosts] = useRecoilState(postsAtom);
+  const [posts, setPosts] = useRecoilState(postsAtom);
   const [loadPosts, setLoadPosts] = useState(true);
 
   useEffect(() => {
