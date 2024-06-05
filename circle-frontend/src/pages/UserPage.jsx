@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import UserHeader from "../components/UserHeader";
 import { useParams } from "react-router-dom";
-import { Flex, Spinner } from "@chakra-ui/react";
-import UserHeader from "../components/UserHeader"
 import useShowToast from "../hooks/useShowToast";
+import { Flex, Spinner } from "@chakra-ui/react";
 import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
@@ -34,9 +34,7 @@ const UserPage = () => {
     }
     getPosts();
 
-  }, [username, showToast, setPosts]);
-
-  if (!user && !loading) return <h1>User not found</h1>;
+  }, [username, showToast, setPosts, user]);
 
   //Loading Spinner
   if (!user && loading) {
@@ -47,9 +45,12 @@ const UserPage = () => {
     );
   }
 
+  if (!user && !loading) return <h1>User not found</h1>;
+
   return (
     <>
       <UserHeader user={user} />
+
       {!loadPosts && posts.length === 0 && <h1>User has not posts.</h1>}
       {loadPosts && (
         <Flex justifyContent={"center"} my={12}>
