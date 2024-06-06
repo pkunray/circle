@@ -1,0 +1,18 @@
+.available-characters {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: right;
+  margin: 4px;
+  color: grey;
+}
+
+.image-icon {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.image-container {
+  margin-top: 20px;
+  width: 100%;
+  position: relative;
+}
