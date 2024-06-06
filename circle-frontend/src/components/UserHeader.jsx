@@ -61,7 +61,7 @@ const UserHeader = ({ user }) => {
                     <Button size={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"}  >Update your Profile</Button>
                 </Link>
             )}
-            {!currentUser._id === user._id &&
+            {currentUser._id !== user._id &&
                 <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
                     {following ? "Unfollow" : "Follow"}
                 </Button>

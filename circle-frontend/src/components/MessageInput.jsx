@@ -13,7 +13,7 @@ const MessageInput = ({ setMessages }) => {
   const setDMs = useSetRecoilState(dmsAtom);
 
   const handleSendMessage = async (e) => {
-    e.preventDefault(); // prevent the form from refreshing the page
+    e.preventDefault();
     if (!messageText) return;
     try {
       const res = await fetch("/api/messages", {
