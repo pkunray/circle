@@ -1,5 +1,5 @@
 import "./Actions.css";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -20,6 +20,10 @@ const Actions = ({ post }) => {
 	const qrRef = useRef();
 	const qrCodeRef = useRef();
 	const showToast = useShowToast();
+
+	useEffect(() => {
+		setLiked(post.likes.includes(user?._id));
+	}, [post.likes, user]);
 
 	// Liking Function
 	const handleLikePost = async () => {
@@ -46,7 +50,6 @@ const Actions = ({ post }) => {
 			showToast("Error", error.message, "error");
 		}
 	};
-
 	// Comment Function
 	const handleCommentPost = async () => {
 		if (!user) return showToast("Error", "Please login to reply", "error");
@@ -265,7 +268,7 @@ const Actions = ({ post }) => {
 					<ModalCloseButton />
 					<ModalBody pb={6}>
 						<FormControl>
-							<Input placeholder='your comment' value={comment} onChange={(e) => setComment(e.target.value)} />
+							<Input placeholder='Your comment' value={comment} onChange={(e) => setComment(e.target.value)} />
 						</FormControl>
 					</ModalBody>
 
@@ -283,7 +286,7 @@ const Actions = ({ post }) => {
 					<ModalCloseButton />
 					<ModalBody pb={6}>
 						<FormControl>
-							<Input placeholder='report reason' value={reason} onChange={(e) => setReason(e.target.value)} />
+							<Input placeholder='Report reason' value={reason} onChange={(e) => setReason(e.target.value)} />
 						</FormControl>
 					</ModalBody>
 

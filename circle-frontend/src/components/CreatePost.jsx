@@ -14,7 +14,7 @@ const AVAILABLE_CHARS = 300;
 
 const CreatePost = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const { handleImageChange, imageURL, setImageUrl } = usePreviewImg();
+    const { handleImageChange, imageUrl, setImageUrl } = usePreviewImg();
     const [postContent, setPostContent] = useState('');
     const [availableCharacters, setAvailableCharacters] = useState(AVAILABLE_CHARS);
     const [loading, setLoading] = useState(false);
@@ -23,10 +23,10 @@ const CreatePost = () => {
 
     const user = useRecoilValue(userAtom);
     const textArea = useRef(null);
-    const fileContent = useRef(null);
+    const fileRef = useRef(null);
     const showToast = useShowToast();
 
-    //Handles and limits text input
+    // Handles and limits text input
     const handleTextChange = (e) => {
         const typedText = e.target.value;
         if (typedText.length > AVAILABLE_CHARS) {
@@ -39,7 +39,7 @@ const CreatePost = () => {
         }
     };
 
-    //Handles post publishing 
+    // Handles post publishing
     const handleCreatePost = async () => {
         setLoading(true);
         try {
@@ -48,7 +48,7 @@ const CreatePost = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ postedBy: user._id, text: postContent, img: imageURL }),
+                body: JSON.stringify({ postedBy: user._id, text: postContent, img: imageUrl }),
             });
             const data = await res.json();
             if (data.error) {
@@ -63,13 +63,13 @@ const CreatePost = () => {
             setPostContent("");
             setImageUrl("");
         } catch (error) {
-            showToast("Error", error, "fetching error")
+            showToast("Error", error, "fetching error");
         } finally {
             setLoading(false);
         }
     };
 
-    //Provides dynamic textbox scaling
+
     useEffect(() => {
         if (textArea.current) {
             textArea.current.style.height = 'auto';
@@ -80,11 +80,11 @@ const CreatePost = () => {
     return (
         <>
             <Button position={"fixed"}
-                    bottom={10}
-                    right={5}
-                    bg={useColorModeValue("gray.300", "gray.dark")}
-                    onClick={onOpen}
-                    size={{ base: "sm", sm: "md" }}>
+                bottom={10}
+                right={5}
+                bg={useColorModeValue("gray.300", "gray.dark")}
+                onClick={onOpen}
+                size={{ base: "sm", sm: "md" }}>
                 <AddIcon />
             </Button>
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -94,16 +94,16 @@ const CreatePost = () => {
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
-                            <Textarea ref={textArea} placeholder="content" onChange={handleTextChange} value={postContent} style={{ overflow: 'hidden', resize: 'none' }} />
+                            <Textarea ref={textArea} placeholder="Content" onChange={handleTextChange} value={postContent} style={{ overflow: 'hidden', resize: 'none' }} />
                             <Text className="available-characters">
                                 {availableCharacters}/{AVAILABLE_CHARS}
                             </Text>
-                            <Input type="file" hidden ref={fileContent} onChange={handleImageChange} />
-                            <BsFillImageFill className="image-icon" size={15} onClick={() => fileContent.current.click()} />
+                            <Input type="file" hidden ref={fileRef} onChange={handleImageChange} />
+                            <BsFillImageFill className="image-icon" size={15} onClick={() => fileRef.current.click()} />
                         </FormControl>
-                        {imageURL && (
+                        {imageUrl && (
                             <Flex className="image-container" mt={5} w={"full"} position={"relative"}>
-                                <Image src={imageURL} alt='Image' />
+                                <Image src={imageUrl} alt='Image' />
                                 <CloseButton onClick={() => { setImageUrl(""); }} bg={"gray.800"} position={"absolute"} top={2} right={2} />
                             </Flex>
                         )}

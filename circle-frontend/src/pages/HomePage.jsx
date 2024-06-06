@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import Post from "../components/Post";
 import "./HomePage.css";
+import { useRecoilState } from "recoil";
+import postsAtom from "../atoms/postsAtom";
 
 const HomePage = () => {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useRecoilState(postsAtom);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('newest');
     const showToast = useShowToast();
@@ -15,6 +17,9 @@ const HomePage = () => {
     };
 
     const filteredPosts = () => {
+        if (!Array.isArray(posts)) {
+            return [];
+        }
         if (filter === 'oldest') {
             return posts.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
         } else if (filter === 'newest') {
@@ -24,6 +29,7 @@ const HomePage = () => {
         }
         return posts;
     };
+
 
     useEffect(() => {
         const getFeedPosts = async () => {
@@ -35,7 +41,6 @@ const HomePage = () => {
                     showToast("Error", data.error, "error");
                     return;
                 }
-                console.log(data);
                 setPosts(data);
             } catch (error) {
                 showToast("Error", error.message, "error");
@@ -44,7 +49,7 @@ const HomePage = () => {
             }
         };
         getFeedPosts();
-    }, [showToast]);
+    }, [showToast, setPosts]);
 
     return (
         <>

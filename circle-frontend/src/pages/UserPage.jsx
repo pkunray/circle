@@ -23,7 +23,6 @@ const UserPage = () => {
       try {
         const res = await fetch(`/api/posts/user/${username}`);
         const data = await res.json();
-        console.log(data);
         setPosts(data);
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -31,9 +30,8 @@ const UserPage = () => {
       } finally {
         setLoadPosts(false);
       }
-    }
+    };
     getPosts();
-
   }, [username, showToast, setPosts, user]);
 
   //Loading Spinner
@@ -51,7 +49,7 @@ const UserPage = () => {
     <>
       <UserHeader user={user} />
 
-      {!loadPosts && posts.length === 0 && <h1>User has not posts.</h1>}
+      {!loadPosts && posts.length === 0 && <h1>User has no posts.</h1>}
       {loadPosts && (
         <Flex justifyContent={"center"} my={12}>
           <Spinner size={"xl"} />

@@ -4,17 +4,18 @@ import { v2 as cloudinary } from "cloudinary";
 
 //Get Pots of Specific User
 const getUserPosts = async (req, res) => {
+  const { username } = req.params;
   try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    const following = user.following;
-    const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+
+    const feedPosts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 });
+
     res.status(200).json(feedPosts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -38,7 +39,7 @@ const createPost = async (req, res) => {
     const { postedBy, text } = req.body;
     let { img } = req.body;
     if (!postedBy || !text) {
-      return res.status(400).json({ error: "ID and Text required" });
+      return res.status(400).json({ error: "Text box can't be empty" });
     }
     const user = await User.findById(postedBy);
     if (!user) {
@@ -121,7 +122,7 @@ const replyToPost = async (req, res) => {
     const userProfilePic = req.user.profilePic;
     const username = req.user.username;
     if (!text) {
-      return res.status(400).json({ error: "Text is required" });
+      return res.status(400).json({ error: "Text box can't be empty" });
     }
     const post = await Post.findById(postId);
     if (!post) {

@@ -33,7 +33,6 @@ const PostPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        console.log(data);
         setPosts([data]);
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -71,7 +70,7 @@ const PostPage = () => {
           </Text>
           {currentUser?._id === user._id && <DeleteIcon size={20}
             cursor={"pointer"}
-            onClick={(e) => { e.preventDefault(); handleDeletePost(posts, user); }} />}
+            onClick={(e) => { e.preventDefault(); handleDeletePost(currentPost, user); }} />}
         </Flex>
       </Flex>
 

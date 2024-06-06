@@ -10,7 +10,7 @@ const useDeletePost = () => {
   const showToast = useShowToast();
   const navigate = useNavigate();
 
-  const handleDeletePost = async (post, user) => {
+  const handleDeletePost = async (currentPost, user) => {
     try {
       if (!window.confirm("Do you want to delete this post?")) {
         return;
@@ -24,7 +24,7 @@ const useDeletePost = () => {
           return;
         }
         showToast("Post deleted", "Post deleted successfully", "success");
-        setPosts(posts.filter((p) => p._id !== post._id));
+        setPosts(posts.filter((p) => p._id !== currentPost._id));
         navigate(`/${user.username}`);
       }
     } catch (error) {

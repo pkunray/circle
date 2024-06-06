@@ -107,7 +107,7 @@ const UserHeader = ({ user }) => {
 
             <Flex width={"full"}>
                 <Flex flex={1} borderBottom={"1.5px solid white"} justifyContent={"center"} pb={3} cursor={"pointer"}>
-                    <Text fontWeight={"bold"}>Circles</Text>
+                    <Text fontWeight={"bold"}>Spins</Text>
                 </Flex>
                 <Flex flex={1} borderBottom={"1px solid gray"} justifyContent={"center"} color={"gray.white"} pb={3} cursor={"pointer"}>
                     <Text fontWeight={"bold"}>Replies</Text>
