@@ -1,0 +1,402 @@
+openapi: 3.0.0
+info:
+  title: Circle Backend API
+  version: 1.0.0
+  description: API documentation for the Circle Backend application.
+servers:
+  - url: http://localhost:5000
+    description: Local server
+
+paths:
+  paths:
+  /api/users/login:
+    post:
+      summary: Log in user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User logged in successfully
+        '400':
+          description: Invalid username or password
+        '500':
+          description: Internal server error
+
+  /api/users/signup:
+    post:
+      summary: Sign up a new user
+      description: Creates a new user account.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                  description: The hashed password of the user
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: User already exists
+        '500':
+          description: Internal server error
+
+  /api/users/logout:
+    post:
+      summary: Log out a user
+      description: Logs out the currently authenticated user.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User logged out successfully
+        '500':
+          description: Internal server error
+
+  /api/users/profile/{username}:
+    get:
+      summary: Get user profile
+      description: Retrieves the profile of a user by their username.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: The username of the user
+      responses:
+        '200':
+          description: User profile retrieved successfully
+        '400':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/users/follow/{id}:
+    post:
+      summary: Follow or unfollow a user
+      description: Follows or unfollows a user based on whether the current user is already following the specified user.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to follow or unfollow
+      responses:
+        '200':
+          description: Follow or unfollow action performed successfully
+        '400':
+          description: Error in follow or unfollow action
+        '500':
+          description: Internal server error
+
+  /api/users/update/{id}:
+    put:
+      summary: Update user profile
+      description: Updates the profile of the authenticated user.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        '400':
+          description: Error in updating user profile
+          content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+        '500':
+          description: Internal server error
+          content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+
+  /api/posts/feed:
+    get:
+      summary: Get feed posts
+      description: Retrieves posts from the users that the authenticated user is following.
+      tags:
+        - Posts
+      responses:
+        '200':
+          description: Feed posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/posts/{id}:
+    get:
+      summary: Get a post
+      description: Retrieves a post by its ID.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to retrieve
+      responses:
+        '200':
+          description: Post retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a post
+      description: Deletes a post by its ID.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to delete
+      responses:
+        '200':
+          description: Post deleted successfully
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+
+  /api/posts/create:
+    post:
+      summary: Create a new post
+      description: Creates a new post.
+      tags:
+        - Posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Post created successfully
+        '400':
+          description: Error in creating post
+        '500':
+          description: Internal server error
+
+  /api/posts/like/{id}:
+    post:
+      summary: Like or unlike a post
+      description: Likes or unlikes a post based on whether the current user has already liked the post.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to like or unlike
+      responses:
+        '200':
+          description: Like or unlike action performed successfully
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+
+  /api/posts/reply/{id}:
+    post:
+      summary: Reply to a post
+      description: Adds a reply to a post.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to reply to
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "This is a reply"
+      responses:
+        '200':
+          description: Reply added successfully
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        profilePic:
+          type: string
+        bio:
+          type: string
+        following:
+          type: array
+          items:
+            type: string
+        followers:
+          type: array
+          items:
+            type: string
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+          description: The hashed password of the user
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+          description: The hashed password of the user
+        profilePic:
+          type: string
+        bio:
+          type: string
+    Post:
+      type: object
+      properties:
+        _id:
+          type: string
+        postedBy:
+          type: string
+        text:
+          type: string
+        img:
+          type: string
+        likes:
+          type: array
+          items:
+            type: string
+        replies:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              text:
+                type: string
+              userProfilePic:
+                type: string
+              username:
+                type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    PostInput:
+      type: object
+      properties:
+        postedBy:
+          type: string
+        text:
+          type: string
+        img:
+          type: string

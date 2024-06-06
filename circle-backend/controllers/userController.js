@@ -18,7 +18,7 @@ const getUserProfile = async(req, res) => {
 
 const signupUser = async(req, res) => {
     try {
-        const {name, email, username, password} = req.body;
+        const {name, lastName, email, username, password} = req.body;
         const user = await User.findOne({$or:[{email},{username}]});
 
         if(user) {
@@ -30,6 +30,7 @@ const signupUser = async(req, res) => {
 
         const newUser = new User({
             name,
+            lastName,
             email,
             username,
             password: hashedPassword
@@ -42,6 +43,7 @@ const signupUser = async(req, res) => {
             res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
+                lastName: newUser.lastName,
                 email: newUser.email,
                 username: newUser.username
             })
@@ -69,8 +71,9 @@ const loginUser = async(req, res) => {
         res.status(200).json({
             _id: user._id,
             name: user.name,
+            lastName: user.lastName,
             email: user.email,
-            userneme: user.username
+            username: user.username
         });
     }
     catch(error) {
@@ -123,7 +126,7 @@ const followUnfollowUser = async(req, res) => {
 };
 
 const updateUser = async(req, res) => {
-    const {name, email, username, password, profilePic, bio} = req.body;
+    const {name, lastName, email, username, password, profilePic, bio} = req.body;
     const userId = req.user._id;
     try {
         let user = await User.findById(userId);
@@ -138,6 +141,7 @@ const updateUser = async(req, res) => {
         }
 
         user.name = name || user.name;
+        user.lastName = name || user.lastName;
         user.email = email || user.email;
         user.username = username || user.username;
         user.profilePic = profilePic || user.profilePic;
