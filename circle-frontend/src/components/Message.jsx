@@ -14,11 +14,11 @@ const Message = ({ ownMessage, message }) => {
           <Text maxW={"350px"} bg={"blue.400"} borderRadius={"md"} padding={1}>
             {message.text}
           </Text>
-          <Avatar src={currentUser.userProfilePic} width="7" height="7" />
+          <Avatar src={currentUser.profilePic} width="7" height="7" />
         </Flex>
       ) : (
         <Flex gap={2}>
-          <Avatar src={selectedDM.profilePic} width="7" height="7" />
+          <Avatar src={selectedDM.userProfilePic} width="7" height="7" />
           <Text
             maxW={"350px"}
             bg={"gray.400"}
