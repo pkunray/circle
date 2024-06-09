@@ -28,8 +28,8 @@ const getUserProfile = async (req, res) => {
 
 const signupUser = async (req, res) => {
     try {
-        const {name, lastName, email, username, password} = req.body;
-        const user = await User.findOne({$or:[{email},{username}]});
+        const { name, email, username, password } = req.body;
+        const user = await User.findOne({ $or: [{ email }, { username }] });
 
         if (user) {
             return res.status(400).json({ error: "User already exsits" });
@@ -40,7 +40,6 @@ const signupUser = async (req, res) => {
 
         const newUser = new User({
             name,
-            lastName,
             email,
             username,
             password: hashedPassword
@@ -53,7 +52,6 @@ const signupUser = async (req, res) => {
             res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
-                lastName: newUser.lastName,
                 email: newUser.email,
                 username: newUser.username,
                 bio: newUser.bio,
@@ -80,10 +78,12 @@ const loginUser = async (req, res) => {
 
         generateTokenAndSetCookie(user._id, res);
 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         res.status(200).json({
             _id: user._id,
             name: user.name,
-            lastName: user.lastName,
             email: user.email,
             username: user.username,
             bio: user.bio,
@@ -140,8 +140,8 @@ const followUnfollowUser = async (req, res) => {
     }
 };
 
-const updateUser = async(req, res) => {
-    const {name, lastName, email, username, password, bio} = req.body;
+const updateUser = async (req, res) => {
+    const { name, email, username, password, bio } = req.body;
     let { profilePic } = req.body;
     const userId = req.user._id;
     try {
@@ -165,7 +165,6 @@ const updateUser = async(req, res) => {
         }
 
         user.name = name || user.name;
-        user.lastName = name || user.lastName;
         user.email = email || user.email;
         user.username = username || user.username;
         user.profilePic = profilePic || user.profilePic;

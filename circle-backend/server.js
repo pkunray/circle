@@ -4,11 +4,11 @@ import connectDB from "./db/connectDB.js";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 import dmRoutes from "./routes/dmRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
 import { app, httpServer } from "./socket/socket.js";
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
 
 dotenv.config();
 connectDB();
@@ -38,6 +38,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/', (req, res) => {
     res.redirect('/api-docs');
 });
+
+//app.listen(PORT, () => console.log(`Server started at http://localhost:${PORT}`));
+
 
 httpServer.listen(PORT, () =>
   console.log(`Server started at http://localhost:${PORT}`)
