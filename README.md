@@ -29,6 +29,10 @@ npm start
 
 ```
 
+## API Document
+
+After running circle-backend, visit http://localhost:9000/api-docs/
+
 ## Tech stack
 
 ### Frontend
@@ -55,6 +59,10 @@ npm start
 
 - HTTP RESTful APIs
 - Socket.IO
+
+### API Documentation
+
+- Swagger
 
 ### Unit Test
 

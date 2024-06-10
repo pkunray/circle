@@ -78,6 +78,9 @@ const loginUser = async (req, res) => {
 
         generateTokenAndSetCookie(user._id, res);
 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         res.status(200).json({
             _id: user._id,
             name: user.name,

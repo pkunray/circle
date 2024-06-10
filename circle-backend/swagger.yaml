@@ -1,0 +1,411 @@
+openapi: 3.0.0
+info:
+  title: Circle Backend API
+  version: 1.0.0
+  description: API documentation for the Circle Backend application.
+servers:
+  - url: http://localhost:9000
+    description: Local server
+
+paths:
+  /api/users/login:
+    post:
+      summary: Log in user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      produces: 
+      - "application/json"
+      responses:
+        400:
+          description: Invalid username or password
+        500:
+          description: Internal server error
+
+  /api/users/signup:
+    post:
+      summary: Sign up a new user
+      description: Creates a new user account.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                  description: The hashed password of the user
+      responses:
+        400:
+          description: User already exists
+        500:
+          description: Internal server error
+
+  /api/users/logout:
+    post:
+      summary: Log out a user
+      description: Logs out the currently authenticated user.
+      tags:
+        - Users
+      responses:
+        500:
+          description: Internal server error
+
+  /api/users/profile/{query}:
+    get:
+      summary: Get user profile
+      description: Retrieve a user's profile by username or user ID
+      tags:
+        - Users
+      parameters:
+        - name: query
+          in: path
+          required: true
+          description: The username or user ID of the user
+          schema:
+            type: string
+      responses:
+        404:
+          description: Profile not found
+        500:
+          description: Internal server error
+
+  /api/users/follow/{id}:
+    post:
+      summary: Follow or unfollow a user
+      description: Follows or unfollows a user based on whether the current user is already following the specified user.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to follow or unfollow
+      responses:
+        400:
+          description: Error in follow or unfollow action
+        500:
+          description: Internal server error
+
+  /api/users/update/{id}:
+    put:
+      summary: Update user profile
+      description: Updates the profile of the authenticated user.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                bio:
+                  type: string
+                profilePic:
+                  type: string
+      responses:
+        400:
+          description: Error in updating user profile
+        500:
+          description: Internal server error
+
+  /api/posts/feed:
+    get:
+      summary: Get feed posts
+      description: Retrieves posts from the users that the authenticated user is following.
+      tags:
+        - Posts
+      responses:
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /api/posts/{id}:
+    get:
+      summary: Get a post
+      description: Retrieves a post by its ID.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to retrieve
+      responses:
+        404:
+          description: Post not found
+        500:
+          description: Internal server error
+
+  /api/posts/create:
+    post:
+      summary: Create a new post
+      description: Creates a new post.
+      tags:
+        - Posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postedBy:
+                  type: string
+                  description: The ID of the user who is posting.
+                text:
+                  type: string
+                  description: The content of the post.
+                img:
+                  type: string
+                  description: (Optional) URL of an image attached to the post.
+      responses:
+        400:
+          description: Bad request or invalid input
+        401:
+          description: Unauthorized user
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  delete:
+      summary: Delete a post
+      description: Deletes a post by its ID.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to delete
+      responses:
+        404:
+          description: Post not found
+        500:
+          description: Internal server error
+
+  /api/posts/like/{id}:
+    put:
+      summary: Like or unlike a post
+      description: Likes or unlikes a post based on whether the current user has already liked the post.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to like or unlike
+      responses:
+        404:
+          description: Post not found
+        500:
+          description: Internal server error
+
+  /api/posts/reply/{id}:
+    put:
+      summary: Reply to a post
+      description: Adds a reply to a post.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the post to reply to
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "This is a reply"
+      responses:
+        404:
+          description: Post not found
+        500:
+          description: Internal server error
+
+  /api/posts/reports/{id}:
+    put:
+      summary: Report a post
+      description: Report a post for a specific reason.
+      tags:
+        - Posts
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to report.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  description: The reason for reporting the post.
+      responses:
+        400:
+          description: Bad Request
+        404:
+          description: Post not found
+        500:
+          description: Internal Server Error
+
+  paths:
+  /api/messages:
+    post:
+      summary: Send a message
+      description: Sends a message to a specific user.
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipientId:
+                  type: string
+                  description: The ID of the recipient user.
+                message:
+                  type: string
+                  description: The message text.
+              required:
+                - recipientId
+                - message
+      responses:
+        400:
+          description: Bad request
+        404:
+          description: DM not found
+        500:
+          description: Internal server error
+
+  /api/messages/{otherUserId}:
+    get:
+      summary: Get messages
+      description: Retrieves messages between the authenticated user and another user.
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: otherUserId
+          required: true
+          schema:
+            type: string
+          description: The ID of the other user in the DM thread.
+      responses:
+        404:
+          description: DM not found
+        500:
+          description: Internal server error
+
+  /api/messages/dms:
+    get:
+      summary: Get DM threads
+      description: Retrieves all DM threads for the authenticated user.
+      tags:
+        - Messages
+      responses:        
+        500:
+          description: Internal server error
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message indicating successful login
+        _id:
+          type: string
+          description: ID of the user
+        name:
+          type: string
+          description: Name of the user
+        lastName:
+          type: string
+          description: Last name of the user
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+        username:
+          type: string
+          description: Username of the user
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
