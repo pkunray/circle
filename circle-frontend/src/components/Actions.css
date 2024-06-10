@@ -1,0 +1,75 @@
+.action-container {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+    gap: 25px;
+    width: 100%;
+    height: 30px;
+}
+
+.base-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.other-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.icons-container {
+    display: flex;
+    gap: 12px;
+}
+
+.qr-header {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.qr-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    margin-top: 20px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.qr-code {
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0px;
+}
+
+.qr-delete {
+    size: 50px;
+    position: right;
+    cursor: pointer;
+    margin: 20px;
+}
+
+.qr-download {
+    size: 50px;
+    position: right;
+    cursor: pointer;
+    margin: 20px;
+}
+
+svg,
+img {
+    cursor: pointer;
+}
+
+.action-container svg:hover {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+}
