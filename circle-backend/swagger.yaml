@@ -307,6 +307,66 @@ paths:
         500:
           description: Internal Server Error
 
+  paths:
+  /api/messages:
+    post:
+      summary: Send a message
+      description: Sends a message to a specific user.
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipientId:
+                  type: string
+                  description: The ID of the recipient user.
+                message:
+                  type: string
+                  description: The message text.
+              required:
+                - recipientId
+                - message
+      responses:
+        400:
+          description: Bad request
+        404:
+          description: DM not found
+        500:
+          description: Internal server error
+
+  /api/messages/{otherUserId}:
+    get:
+      summary: Get messages
+      description: Retrieves messages between the authenticated user and another user.
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: otherUserId
+          required: true
+          schema:
+            type: string
+          description: The ID of the other user in the DM thread.
+      responses:
+        404:
+          description: DM not found
+        500:
+          description: Internal server error
+
+  /api/messages/dms:
+    get:
+      summary: Get DM threads
+      description: Retrieves all DM threads for the authenticated user.
+      tags:
+        - Messages
+      responses:        
+        500:
+          description: Internal server error
+
 components:
   schemas:
     LoginRequest:
