@@ -102,7 +102,7 @@ export default function LoginCard() {
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
-                Don&apos;'t have an account? <Link color={'blue.400'}
+                Don&apos;t have an account? <Link color={'blue.400'}
                   onClick={() => setAuthScreen("signup")}>Sign up</Link>
               </Text>
             </Stack>
