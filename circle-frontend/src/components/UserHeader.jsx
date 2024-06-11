@@ -56,23 +56,23 @@ const UserHeader = ({ user }) => {
                 </Box>
             </Flex>
             <Text>{user.bio}</Text>
-            {currentUser._id === user._id && (
-                <Link as={RouterLink} to='/update'>
-                    <Button size={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"}  >Update your Profile</Button>
-                </Link>
-            )}
+
             {currentUser._id !== user._id &&
                 <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
                     {following ? "Unfollow" : "Follow"}
                 </Button>
             }
-            <Flex width={"full"} justifyContent={"space-between"}>
-                <Flex gap={2} alignItems={"center"}>
-                    <Text color={"gray.light"}>{user.followers.lenght}</Text>
-                    <Box w={1} h={1} bg={"gray.light"} borderRadius={"full"}></Box>
-                    <Link color={"gray.light"}>instagram.com</Link>
-                </Flex>
-                <Flex>
+            <Flex width={"full"} justifyContent={"space-between"} alignItems={"center"}>
+                {currentUser._id === user._id ? (
+                    <Link as={RouterLink} to='/update'>
+                        <Button size={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"}>Update your Profile</Button>
+                    </Link>
+                ) : (
+                    <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
+                        {following ? "Unfollow" : "Follow"}
+                    </Button>
+                )}
+                <Flex gap={2}>
                     <Box
                         className="icon-container"
                         sx={{
