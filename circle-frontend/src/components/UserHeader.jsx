@@ -25,17 +25,21 @@ const UserHeader = ({ user }) => {
         });
     };
 
-
     return (
         <VStack gap={4} alignItems={"start"}>
             <Flex justifyContent={"space-between"} w={"full"}>
                 <Box>
-                    <Text fontSize={"2xl"} fontWeight={"bold"}>
+                    <Text paddingBottom="10px" fontSize={"2xl"} fontWeight={"bold"}>
                         {user.name}
                     </Text>
                     <Flex gap={2} alignItems={"center"}>
-                        <Text fontSize={"sm"}>{user.username}</Text>
-                        <Text fontSize={"xs"} bg={colorMode === "dark" ? "gray.dark" : "white"} p={1} borderRadius={"full"}>circle.net</Text>
+                        <Text fontSize={"sm"}> {user.username}</Text>
+                        <Text fontSize={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"} p={1} borderRadius={"10px"}>circle.net</Text>
+                    </Flex>
+                    <Flex>
+                        <Text fontWeight={"bold"} paddingTop={"10px"} paddingBottom={"10px"} fontSize={"m"}> Followers: {user.followers.length} </Text>
+                        <Text paddingTop={"10px"} paddingBottom={"10px"} paddingLeft={"50px"} paddingRight={"50px"}> | | </Text>
+                        <Text fontWeight={"bold"} paddingTop={"10px"} paddingBottom={"10px"} fontSize={"m"}> Following: {user.following.length} </Text>
                     </Flex>
                 </Box>
                 <Box>
