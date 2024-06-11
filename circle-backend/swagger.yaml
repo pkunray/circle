@@ -108,7 +108,7 @@ paths:
           description: Internal server error
 
   /api/users/update/{id}:
-    put:
+    patch:
       summary: Update user profile
       description: Updates the profile of the authenticated user.
       tags:
