@@ -25,10 +25,18 @@
 
 .user-bio {
     padding: 10px;
-    border: 1px solid black;
     border-radius: 10px;
+    border: 1px solid;
 }
 
 .user-header-spins {
     border-bottom: 1.5px solid white;
+}
+
+[data-theme='light'] .user-bio {
+    border-color: black;
+}
+
+[data-theme='dark'] .user-bio {
+    border-color: white;
 }
