@@ -1,5 +1,5 @@
 import "./UserHeader.css";
-import { Avatar, Box, Button, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast, useColorMode } from "@chakra-ui/react";
+import { Avatar, Box, Button, Divider, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast, useColorMode } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { Link as RouterLink } from "react-router-dom";
@@ -20,7 +20,7 @@ const UserHeader = ({ user }) => {
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
-            toast({ description: 'URL Copied!' })
+            toast({ description: 'URL Copied!' });
         });
     };
 
@@ -35,21 +35,25 @@ const UserHeader = ({ user }) => {
                         <Text fontSize={"sm"}> {user.username}</Text>
                         <Text fontSize={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"} p={1} borderRadius={"10px"}>circle.net</Text>
                     </Flex>
-                    <Flex>
-                        <Text className="follow-text">Followers:  <Text as="span" className="follow-number">{user.followers.length}</Text> </Text>
-                        <Text className="divider">  </Text>
-                        <Text className="follow-text">Following:  <Text as="span" className="follow-number">{user.following.length}</Text> </Text>
+                    <Box h={2} />
+                    <Flex className="follow-text">
+                        <Text>
+                            Followers: <Text as="span" className="follow-number">{user.followers.length}</Text>
+                        </Text>
+                        <Divider orientation="vertical" height="24px" borderColor={colorMode === "dark" ? "white" : "black"} mx={2} borderWidth={"1px"} />
+                        <Text>
+                            Following: <Text as="span" className="follow-number">{user.following.length}</Text>
+                        </Text>
                     </Flex>
                 </Box>
                 <Box>
-                    {user.profilePic && (
+                    {user.profilePic ? (
                         <Avatar
                             name={user.name}
                             src={user.profilePic}
                             size={"xl"}
                         />
-                    )}
-                    {!user.profilePic && (
+                    ) : (
                         <Avatar
                             name={user.name}
                             src="https://bit.ly/broken-link"
@@ -61,18 +65,13 @@ const UserHeader = ({ user }) => {
             <Text className="bio-header">About Me:</Text>
             <Text className="user-bio"> {user.bio}</Text>
 
-            {currentUser._id !== user._id &&
-                <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
-                    {following ? "Unfollow" : "Follow"}
-                </Button>
-            }
             <Flex width={"full"} justifyContent={"space-between"} alignItems={"center"}>
                 {currentUser._id === user._id ? (
                     <Link as={RouterLink} to='/update'>
                         <Button size={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"}>Update your Profile</Button>
                     </Link>
                 ) : (
-                    <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
+                    <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating} bg={colorMode === "dark" ? "gray.dark" : "white"}>
                         {following ? "Unfollow" : "Follow"}
                     </Button>
                 )}

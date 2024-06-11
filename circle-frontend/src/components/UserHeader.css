@@ -20,8 +20,7 @@
 }
 
 .bio-header {
-    margin-bottom: -10px;
-    padding-left: 20px;
+    font-weight: bold;
 }
 
 .user-bio {
