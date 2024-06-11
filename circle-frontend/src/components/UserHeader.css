@@ -1,0 +1,35 @@
+.user-header-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: medium;
+}
+
+.follow-text {
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.follow-number {
+    font-weight: normal;
+}
+
+.divider {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.bio-header {
+    margin-bottom: -10px;
+    padding-left: 20px;
+}
+
+.user-bio {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.user-header-spins {
+    border-bottom: 1.5px solid white;
+}

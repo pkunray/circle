@@ -1,9 +1,8 @@
+import "./UserHeader.css";
 import { Avatar, Box, Button, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast, useColorMode } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { Link as RouterLink } from "react-router-dom";
-import { useState } from "react";
-import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import useFollowUnfollow from "../hooks/useFollowUnfollow";
@@ -26,7 +25,7 @@ const UserHeader = ({ user }) => {
     };
 
     return (
-        <VStack gap={4} alignItems={"start"}>
+        <VStack className="user-header-container" gap={4} alignItems={"start"}>
             <Flex justifyContent={"space-between"} w={"full"}>
                 <Box>
                     <Text paddingBottom="10px" fontSize={"2xl"} fontWeight={"bold"}>
@@ -37,9 +36,9 @@ const UserHeader = ({ user }) => {
                         <Text fontSize={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"} p={1} borderRadius={"10px"}>circle.net</Text>
                     </Flex>
                     <Flex>
-                        <Text fontWeight={"bold"} paddingTop={"10px"} paddingBottom={"10px"} fontSize={"m"}> Followers: {user.followers.length} </Text>
-                        <Text paddingTop={"10px"} paddingBottom={"10px"} paddingLeft={"50px"} paddingRight={"50px"}> | | </Text>
-                        <Text fontWeight={"bold"} paddingTop={"10px"} paddingBottom={"10px"} fontSize={"m"}> Following: {user.following.length} </Text>
+                        <Text className="follow-text">Followers:  <Text as="span" className="follow-number">{user.followers.length}</Text> </Text>
+                        <Text className="divider">  </Text>
+                        <Text className="follow-text">Following:  <Text as="span" className="follow-number">{user.following.length}</Text> </Text>
                     </Flex>
                 </Box>
                 <Box>
@@ -59,7 +58,8 @@ const UserHeader = ({ user }) => {
                     )}
                 </Box>
             </Flex>
-            <Text>{user.bio}</Text>
+            <Text className="bio-header">About Me:</Text>
+            <Text className="user-bio"> {user.bio}</Text>
 
             {currentUser._id !== user._id &&
                 <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
@@ -109,8 +109,8 @@ const UserHeader = ({ user }) => {
                 </Flex>
             </Flex>
 
-            <Flex width={"full"}>
-                <Flex flex={1} borderBottom={"1.5px solid white"} justifyContent={"center"} pb={3} cursor={"pointer"}>
+            <Flex className="user-header-spins" width={"full"}>
+                <Flex flex={1} justifyContent={"center"} pb={3} cursor={"pointer"}>
                     <Text fontWeight={"bold"}>Spins</Text>
                 </Flex>
             </Flex>
