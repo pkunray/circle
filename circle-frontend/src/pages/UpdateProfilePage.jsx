@@ -19,7 +19,7 @@ export default function UpdateProfilePage() {
     const [updating, setUpdating] = useState(false);
 
     const showToast = useShowToast();
-    const { handleImageChange, imageUrl, removeImage } = usePreviewImg();
+    const { handleFileChange, imageUrl, removeFile } = usePreviewImg();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -31,7 +31,7 @@ export default function UpdateProfilePage() {
     };
 
     const handleRemoveAvatar = () => {
-        removeImage();
+        removeFile();
     };
 
     const handleSubmit = async (e) => {
@@ -87,7 +87,7 @@ export default function UpdateProfilePage() {
                                         Remove Avatar
                                     </Button>
                                 </Stack>
-                                <Input type="file" hidden ref={fileRef} onChange={handleImageChange} />
+                                <Input type="file" hidden ref={fileRef} onChange={handleFileChange} />
                             </Center>
                         </Stack>
                     </FormControl>
