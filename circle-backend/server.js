@@ -36,11 +36,10 @@ app.use("/api/messages", dmRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req, res) => {
-    res.redirect('/api-docs');
+  res.redirect('/api-docs');
 });
 
 //app.listen(PORT, () => console.log(`Server started at http://localhost:${PORT}`));
-
 
 httpServer.listen(PORT, () =>
   console.log(`Server started at http://localhost:${PORT}`)

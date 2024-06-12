@@ -1,6 +1,6 @@
 import './CreatePost.css';
 import { useRef, useState, useEffect } from "react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Button, CloseButton, Flex, FormControl, Image, Input, Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { BsFillImageFill } from "react-icons/bs";
 import { FaVideo } from "react-icons/fa";
@@ -24,7 +24,8 @@ const CreatePost = () => {
 
     const user = useRecoilValue(userAtom);
     const textArea = useRef(null);
-    const fileRef = useRef(null);
+    const imageFileRef = useRef(null);
+    const videoFileRef = useRef(null);
     const showToast = useShowToast();
 
     // Handles and limits text input
@@ -100,19 +101,19 @@ const CreatePost = () => {
                                 {availableCharacters}/{AVAILABLE_CHARS}
                             </Text>
                             <Flex>
-                                <Input type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "image")} accept="image/*" />
+                                <Input type="file" hidden ref={imageFileRef} onChange={(e) => handleFileChange(e, "image")} accept="image/*" />
                                 <Box mr={2}>
-                                    <BsFillImageFill className="image-icon" size={15} onClick={() => fileRef.current.click()} />
+                                    <BsFillImageFill className="image-icon" size={15} onClick={() => imageFileRef.current.click()} />
                                 </Box>
-                                <Input type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "video")} accept="video/*" />
-                                <FaVideo className="video-icon" size={15} onClick={() => fileRef.current.click()} />
+                                <Input type="file" hidden ref={videoFileRef} onChange={(e) => handleFileChange(e, "video")} accept="video/*" />
+                                <FaVideo className="video-icon" size={15} onClick={() => videoFileRef.current.click()} />
                             </Flex>
                         </FormControl>
                         {(imageUrl || videoUrl) && (
                             <Flex className="image-container" mt={5} w={"full"} position={"relative"}>
                                 {imageUrl && <Image src={imageUrl} alt='Image' />}
                                 {videoUrl && <video src={videoUrl} controls />}
-                                <CloseButton onClick={() => { setImageUrl(""); setVideoUrl(""); }} bg={"gray.800"} position={"absolute"} top={2} right={2} />
+                                <DeleteIcon onClick={() => { setImageUrl(""); setVideoUrl(""); }} position={"absolute"} top={2} right={2} />
                             </Flex>
                         )}
                     </ModalBody>
@@ -126,6 +127,6 @@ const CreatePost = () => {
             </Modal>
         </>
     );
-};
+}
 
 export default CreatePost;

@@ -36,9 +36,7 @@ const getPost = async (req, res) => {
 //Create New Post
 const createPost = async (req, res) => {
   try {
-    const { postedBy, text } = req.body;
-    let { img } = req.body;
-    let { video } = req.body;
+    const { postedBy, text, img, video } = req.body;
     if (!postedBy || !text) {
       return res.status(400).json({ error: "Text box can't be empty" });
     }
@@ -53,15 +51,20 @@ const createPost = async (req, res) => {
     if (text.length > maxLength) {
       return res.status(400).json({ error: `Character limit: ${maxLength} characters` });
     }
+    let uploadedImgUrl, uploadedVideoUrl;
     if (img) {
-      const uploadedResponse = await cloudinary.uploader.upload(img);
-      img = uploadedResponse.secure_url;
+      const uploadedResponse = await cloudinary.uploader.upload(img, {
+        resource_type: "image"
+      });
+      uploadedImgUrl = uploadedResponse.secure_url;
     }
     if (video) {
-      const uploadedResponse = await cloudinary.uploader.upload(video);
-      video = uploadedResponse.secure_url;
+      const uploadedResponse = await cloudinary.uploader.upload(video, {
+        resource_type: "video"
+      });
+      uploadedVideoUrl = uploadedResponse.secure_url;
     }
-    const newPost = new Post({ postedBy, text, img });
+    const newPost = new Post({ postedBy, text, img: uploadedImgUrl, video: uploadedVideoUrl });
     await newPost.save();
     res.status(201).json(newPost);
   } catch (error) {
