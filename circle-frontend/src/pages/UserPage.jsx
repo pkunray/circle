@@ -22,6 +22,9 @@ const UserPage = () => {
       setLoadPosts(true);
       try {
         const res = await fetch(`/api/posts/user/${username}`);
+        if (!res.ok) {
+          throw new Error("User not found");
+        }
         const data = await res.json();
         setPosts(data);
       } catch (error) {
@@ -31,10 +34,11 @@ const UserPage = () => {
         setLoadPosts(false);
       }
     };
+
     getPosts();
   }, [username, showToast, setPosts, user]);
 
-  //Loading Spinner
+
   if (!user && loading) {
     return (
       <Flex justifyContent={"center"}>
@@ -43,13 +47,21 @@ const UserPage = () => {
     );
   }
 
-  if (!user && !loading) return <h1>User not found</h1>;
+  if (!user && !loading) return (
+    <Flex justifyContent="center" alignItems="center">
+      <h1>User not found.</h1>
+    </Flex>
+  );
 
   return (
     <>
       <UserHeader user={user} />
 
-      {!loadPosts && posts.length === 0 && <h1>User has no posts.</h1>}
+      {!loadPosts && posts.length === 0 &&
+        <Flex justifyContent="center" alignItems="center">
+          <h1>User has no posts.</h1>
+        </Flex>}
+
       {loadPosts && (
         <Flex justifyContent={"center"} my={12}>
           <Spinner size={"xl"} />

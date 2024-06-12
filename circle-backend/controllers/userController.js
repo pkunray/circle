@@ -174,14 +174,14 @@ const updateUser = async (req, res) => {
         user.password = null;
 
         await Post.updateMany(
-			{ "replies.userId": userId }, {
-				$set: {
-					"replies.$[reply].username": user.username,
-					"replies.$[reply].userProfilePic": user.profilePic,
-				},
-			},
-			{ arrayFilters: [{ "reply.userId": userId }] }
-		);
+            { "replies.userId": userId }, {
+            $set: {
+                "replies.$[reply].username": user.username,
+                "replies.$[reply].userProfilePic": user.profilePic,
+            },
+        },
+            { arrayFilters: [{ "reply.userId": userId }] }
+        );
 
         res.status(200).json(user);
     }
