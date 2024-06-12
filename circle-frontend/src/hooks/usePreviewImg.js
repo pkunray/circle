@@ -33,11 +33,26 @@ const usePreviewImg = () => {
         }
     };
 
-    const removeImage = () => {
-        handleFileChange(null, true);
+    const removeImage = async () => {
+        try {
+            const response = await fetch('/user.png');
+            const blob = await response.blob();
+            const file = new File([blob], "user.png", { type: "image/png" });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageUrl(reader.result);
+                setVideoUrl(null);
+            };
+            reader.readAsDataURL(file);
+        } catch (error) {
+            showToast("Error", "Failed to load default image", "error");
+            console.error("Error loading default image:", error);
+            setImageUrl(null);
+            setVideoUrl(null);
+        }
     };
 
-    return { handleFileChange, imageUrl, setImageUrl, videoUrl, setVideoUrl };
+    return { handleFileChange, imageUrl, setImageUrl, videoUrl, setVideoUrl, removeImage };
 };
 
 export default usePreviewImg;
