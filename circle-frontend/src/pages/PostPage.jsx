@@ -76,9 +76,21 @@ const PostPage = () => {
 
       <Text my={3}>{currentPost.text}</Text>
 
-      <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>
-        <Image src={currentPost.img} w={"full"} />
-      </Box>
+      {currentPost.img && (
+        <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>
+          <Image src={currentPost.img} w={"full"} />
+        </Box>
+      )}
+
+      {currentPost.video && (
+        <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>
+          <video src={currentPost.video} controls />
+        </Box>
+      )}
+
+      {!currentPost.img && !currentPost.video && (
+        <Text>No image or video available</Text>
+      )}
 
       <Flex gap={3} my={3}>
         <Actions post={currentPost} />
