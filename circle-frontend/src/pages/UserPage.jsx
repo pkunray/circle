@@ -5,16 +5,19 @@ import useShowToast from "../hooks/useShowToast";
 import { Flex, Spinner } from "@chakra-ui/react";
 import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import postsAtom from "../atoms/postsAtom";
+import userAtom from "../atoms/userAtom";
 
 const UserPage = () => {
-  //Use Custom GetUserProfile Hook
+
   const { user, loading } = useGetUserProfile();
-  const { username } = useParams()
+  const { username } = useParams();
   const showToast = useShowToast();
+  const currentUser = useRecoilValue(userAtom);
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [loadPosts, setLoadPosts] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -38,7 +41,6 @@ const UserPage = () => {
     getPosts();
   }, [username, showToast, setPosts, user]);
 
-
   if (!user && loading) {
     return (
       <Flex justifyContent={"center"}>
@@ -47,31 +49,45 @@ const UserPage = () => {
     );
   }
 
-  if (!user && !loading) return (
-    <Flex justifyContent="center" alignItems="center">
-      <h1>User not found.</h1>
-    </Flex>
-  );
+  if (!user && !loading) {
+    return (
+      <Flex justifyContent="center" alignItems="center">
+        <h1>User not found.</h1>
+      </Flex>
+    );
+  }
 
   return (
     <>
-      <UserHeader user={user} />
+      <UserHeader user={user} currentUser={currentUser} setIsFollowing={setIsFollowing} />
 
-      {!loadPosts && posts.length === 0 &&
+      {currentUser._id !== user._id && !isFollowing && (
         <Flex justifyContent="center" alignItems="center">
-          <h1>User has no posts.</h1>
-        </Flex>}
-
-      {loadPosts && (
-        <Flex justifyContent={"center"} my={12}>
-          <Spinner size={"xl"} />
+          <h1>Follow this user to see their posts.</h1>
         </Flex>
       )}
-      {posts.map((post) => (
-        <Post key={post._id} post={post} postedBy={post.postedBy} />
-      ))}
+
+      {(currentUser._id === user._id || isFollowing) && (
+        <>
+          {!loadPosts && posts.length === 0 && (
+            <Flex justifyContent="center" alignItems="center">
+              <h1>User has no posts.</h1>
+            </Flex>
+          )}
+
+          {loadPosts && (
+            <Flex justifyContent={"center"} my={12}>
+              <Spinner size={"xl"} />
+            </Flex>
+          )}
+
+          {posts.map((post) => (
+            <Post key={post._id} post={post} postedBy={post.postedBy} />
+          ))}
+        </>
+      )}
     </>
-  )
-}
+  );
+};
 
 export default UserPage;

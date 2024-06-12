@@ -3,15 +3,18 @@ import { Avatar, Box, Button, Divider, Flex, Link, Menu, MenuButton, MenuItem, M
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { Link as RouterLink } from "react-router-dom";
-import userAtom from "../atoms/userAtom";
-import { useRecoilValue } from "recoil";
 import useFollowUnfollow from "../hooks/useFollowUnfollow";
+import { useEffect } from "react";
 
-const UserHeader = ({ user }) => {
+const UserHeader = ({ user, currentUser, setIsFollowing }) => {
     const { colorMode } = useColorMode();
-    const currentUser = useRecoilValue(userAtom);
     const toast = useToast();
     const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
+
+
+    useEffect(() => {
+        setIsFollowing(following);
+    }, [following, setIsFollowing]);
 
     if (!currentUser) {
         return null;
