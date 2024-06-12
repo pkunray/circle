@@ -3,11 +3,12 @@ import useShowToast from "./useShowToast";
 
 const usePreviewImg = () => {
     const [imageUrl, setImageUrl] = useState(null);
+    const [videoUrl, setVideoUrl] = useState(null);
     const showToast = useShowToast();
 
-    const handleImageChange = async (e, defaultImage = false) => {
+    const handleFileChange = async (e, fileType) => {
         let file;
-        if (defaultImage) {
+        if (fileType != "image" && fileType != "video" && e === null) {
             try {
                 const response = await fetch('/user.png');
                 const blob = await response.blob();
@@ -21,23 +22,32 @@ const usePreviewImg = () => {
             file = e.target.files[0];
         }
 
-        if (file && file.type.startsWith("image/")) {
+        if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImageUrl(reader.result);
+                if (fileType === "image" && file.type.startsWith("image/")) {
+                    setImageUrl(reader.result);
+                } else if (fileType === "video" && file.type.startsWith("video/")) {
+                    setVideoUrl(reader.result);
+                } else {
+                    showToast("Invalid file type", `Please select a ${fileType} file`, "error");
+                    setImageUrl(null);
+                    setVideoUrl(null);
+                }
             };
             reader.readAsDataURL(file);
         } else {
-            showToast("Invalid file type", "Please select an image file", "error");
+            showToast("Invalid file", `Please select a ${fileType} file`, "error");
             setImageUrl(null);
+            setVideoUrl(null);
         }
     };
 
-    const removeImage = () => {
-        handleImageChange(null, true);
+    const removeFile = (fileType) => {
+        handleFileChange(null, fileType);
     };
 
-    return { handleImageChange, imageUrl, setImageUrl, removeImage };
+    return { handleFileChange, imageUrl, setImageUrl, videoUrl, setVideoUrl, removeFile };
 };
 
 export default usePreviewImg;

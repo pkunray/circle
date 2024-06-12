@@ -38,6 +38,7 @@ const createPost = async (req, res) => {
   try {
     const { postedBy, text } = req.body;
     let { img } = req.body;
+    let { video } = req.body;
     if (!postedBy || !text) {
       return res.status(400).json({ error: "Text box can't be empty" });
     }
@@ -55,6 +56,10 @@ const createPost = async (req, res) => {
     if (img) {
       const uploadedResponse = await cloudinary.uploader.upload(img);
       img = uploadedResponse.secure_url;
+    }
+    if (video) {
+      const uploadedResponse = await cloudinary.uploader.upload(video);
+      video = uploadedResponse.secure_url;
     }
     const newPost = new Post({ postedBy, text, img });
     await newPost.save();
@@ -78,6 +83,10 @@ const deletePost = async (req, res) => {
     if (post.img) {
       const imgID = post.img.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(imgID);
+    }
+    if (post.video) {
+      const videoID = post.video.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(videoID);
     }
     await Post.findByIdAndDelete(req.params.id);
     return res.status(200).json({ message: "Post deleted successfully" });
