@@ -13,7 +13,7 @@ import { FiLogOut } from "react-icons/fi";
 import { useColorModeValue } from "@chakra-ui/react";
 
 const Header = () => {
-  const { colorMode } = useColorMode();
+  const { colorMode, toggleColorMode } = useColorMode();
   const user = useRecoilValue(userAtom);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const logout = useLogout();
@@ -46,6 +46,7 @@ const Header = () => {
               Login
             </HoverButton>
           )}
+
           {user && (
             <HoverButton onClick={handleGoBack} hoverColor={hoverColor}>
               <AiOutlineArrowLeft size={24} />
@@ -68,6 +69,15 @@ const Header = () => {
             </Flex>
           )}
         </Flex>
+
+        <Image
+          cursor={"pointer"}
+          alt="logo"
+          w={32}
+          h={32}
+          src={"/favicon.png"}
+          onClick={toggleColorMode}
+        />
 
         {user && (
           <Flex alignItems={"center"} gap={2}>

@@ -1,5 +1,28 @@
 services:
-
+  frontend:
+    build:
+      context: circle-frontend
+    ports:
+      - 3000:3000
+    stdin_open: true
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - react-express
+  backend:
+    restart: always
+    build:
+      context: circle-backend
+    ports:
+      - 9000:9000
+    networks:
+      - react-express
+      - express-mongo
+    volumes:
+      - ./volumes/config/circle-backend/.env:/circle-backend/.env
+    depends_on:
+      - mongo
   mongo:
     image: mongo:latest
     restart: always
@@ -10,6 +33,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
     volumes:
       - ./volumes/mongo-data:/data/db
+    networks:
+      - express-mongo
 
   mongo-express:
     image: mongo-express:latest
@@ -23,5 +48,10 @@ services:
       ME_CONFIG_BASICAUTH: true
       ME_CONFIG_BASICAUTH_USERNAME: ${express_username}
       ME_CONFIG_BASICAUTH_PASSWORD: ${express_password}
-    depends_on: 
+    depends_on:
       - mongo
+    networks:
+      - express-mongo
+networks:
+  react-express:
+  express-mongo:
