@@ -56,6 +56,13 @@ const UserPage = () => {
       </Flex>
     );
   }
+  if (!currentUser || !currentUser._id) {
+    return (
+      <Flex justifyContent="center" alignItems="center">
+        <h1>Please Login or Signup to continue.</h1>
+      </Flex>
+    );
+  }
 
   return (
     <>
