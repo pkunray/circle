@@ -4,8 +4,8 @@ import connectDB from "./db/connectDB.js";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 import dmRoutes from "./routes/dmRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
 import { app, httpServer } from "./socket/socket.js";
@@ -21,7 +21,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const swaggerDocument = YAML.load('./swagger.yaml');
+const swaggerDocument = YAML.load("./swagger.yaml");
 
 //Middlewares
 app.use(express.json({ limit: "50mb" }));
@@ -33,15 +33,12 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/messages", dmRoutes);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.get('/', (req, res) => {
-    res.redirect('/api-docs');
+app.get("/", (req, res) => {
+  res.redirect("/api-docs");
 });
 
-//app.listen(PORT, () => console.log(`Server started at http://localhost:${PORT}`));
-
-
-httpServer.listen(PORT, () =>
-  console.log(`Server started at http://localhost:${PORT}`)
+httpServer.listen({ port: PORT, host: "0.0.0.0" }, () =>
+  console.log(`Server started at http://0.0.0.0:${PORT}`)
 );
