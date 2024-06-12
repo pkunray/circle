@@ -29,7 +29,11 @@
     border: 1px solid;
 }
 
-.user-header-spins {
+[data-theme='light'] .user-header-spins {
+    border-bottom: 1.5px solid black;
+}
+
+[data-theme='dark'] .user-header-spins {
     border-bottom: 1.5px solid white;
 }
 
