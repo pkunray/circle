@@ -1,9 +1,9 @@
 import './CreatePost.css';
 import { useRef, useState, useEffect } from "react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, CloseButton, Flex, FormControl, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
+import { Button, CloseButton, Flex, FormControl, Image, Input, Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { BsFillImageFill } from "react-icons/bs";
-import { FaVideo } from "react-icons/fa"; 
+import { FaVideo } from "react-icons/fa";
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
@@ -100,14 +100,12 @@ const CreatePost = () => {
                                 {availableCharacters}/{AVAILABLE_CHARS}
                             </Text>
                             <Flex>
-                                <Input id="image-upload" type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "image")} accept="image/*" />
-                                <label htmlFor="image-upload">
-                                    <BsFillImageFill className="image-icon" size={15} />
-                                </label>
-                                <Input id="video-upload" type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "video")} accept="video/*" />
-                                <label htmlFor="video-upload">
-                                    <FaVideo className="video-icon" size={15} />
-                                </label>
+                                <Input type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "image")} accept="image/*" />
+                                <Box mr={2}>
+                                    <BsFillImageFill className="image-icon" size={15} onClick={() => fileRef.current.click()} />
+                                </Box>
+                                <Input type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "video")} accept="video/*" />
+                                <FaVideo className="video-icon" size={15} onClick={() => fileRef.current.click()} />
                             </Flex>
                         </FormControl>
                         {(imageUrl || videoUrl) && (
