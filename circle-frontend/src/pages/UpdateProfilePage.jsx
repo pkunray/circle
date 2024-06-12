@@ -1,6 +1,7 @@
 import { Button, Flex, FormControl, FormLabel, Heading, Input, Stack, useColorModeValue, Avatar, Center } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 import userAtom from "../atoms/userAtom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
@@ -18,7 +19,8 @@ export default function UpdateProfilePage() {
     const [updating, setUpdating] = useState(false);
 
     const showToast = useShowToast();
-    const { handleImageChange, imageUrl, removeImage } = usePreviewImg();
+    const { handleFileChange, imageUrl, removeImage } = usePreviewImg();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,7 +40,7 @@ export default function UpdateProfilePage() {
         setUpdating(true);
         try {
             const res = await fetch(`/api/users/update/${user._id}`, {
-                method: "PUT",
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -52,11 +54,16 @@ export default function UpdateProfilePage() {
             showToast("Success", "Profile updated successfully", "success");
             setUser(data);
             localStorage.setItem("user-circle", JSON.stringify(data));
+            navigate(`/${data.username}`);
         } catch (error) {
             showToast("Error", error, "error");
         } finally {
             setUpdating(false);
         }
+    };
+
+    const handleCancel = () => {
+        navigate(`/${user.username}`);
     };
 
     return (
@@ -80,7 +87,7 @@ export default function UpdateProfilePage() {
                                         Remove Avatar
                                     </Button>
                                 </Stack>
-                                <Input type="file" hidden ref={fileRef} onChange={handleImageChange} />
+                                <Input type="file" hidden ref={fileRef} onChange={(e) => handleFileChange(e, "image")} />
                             </Center>
                         </Stack>
                     </FormControl>
@@ -105,6 +112,7 @@ export default function UpdateProfilePage() {
                             _hover={{
                                 bg: "red.500",
                             }}
+                            onClick={handleCancel}
                         >
                             Cancel
                         </Button>

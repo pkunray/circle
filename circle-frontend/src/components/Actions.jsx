@@ -129,7 +129,6 @@ const Actions = ({ post }) => {
 				const qrData = window.location.href;
 				setPosts(posts.map((p) => (p._id === post._id ? { ...p, qrData } : p)));
 				showToast("Success", "QR code generated!", "success");
-				showToast("Info", "Select Post to view", "info");
 			} catch (error) {
 				showToast("Error", "Failed to generate QR code", "error");
 			}

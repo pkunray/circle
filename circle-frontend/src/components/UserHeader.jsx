@@ -1,18 +1,20 @@
-import { Avatar, Box, Button, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast, useColorMode } from "@chakra-ui/react";
+import "./UserHeader.css";
+import { Avatar, Box, Button, Divider, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast, useColorMode } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { Link as RouterLink } from "react-router-dom";
-import { useState } from "react";
-import useShowToast from "../hooks/useShowToast";
-import userAtom from "../atoms/userAtom";
-import { useRecoilValue } from "recoil";
 import useFollowUnfollow from "../hooks/useFollowUnfollow";
+import { useEffect } from "react";
 
-const UserHeader = ({ user }) => {
+const UserHeader = ({ user, currentUser, setIsFollowing }) => {
     const { colorMode } = useColorMode();
-    const currentUser = useRecoilValue(userAtom);
     const toast = useToast();
     const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
+
+
+    useEffect(() => {
+        setIsFollowing(following);
+    }, [following, setIsFollowing]);
 
     if (!currentUser) {
         return null;
@@ -21,32 +23,40 @@ const UserHeader = ({ user }) => {
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
-            toast({ description: 'URL Copied!' })
+            toast({ description: 'URL Copied!' });
         });
     };
 
-
     return (
-        <VStack gap={4} alignItems={"start"}>
+        <VStack className="user-header-container" gap={4} alignItems={"start"}>
             <Flex justifyContent={"space-between"} w={"full"}>
                 <Box>
-                    <Text fontSize={"2xl"} fontWeight={"bold"}>
+                    <Text paddingBottom="10px" fontSize={"2xl"} fontWeight={"bold"}>
                         {user.name}
                     </Text>
                     <Flex gap={2} alignItems={"center"}>
-                        <Text fontSize={"sm"}>{user.username}</Text>
-                        <Text fontSize={"xs"} bg={colorMode === "dark" ? "gray.dark" : "white"} p={1} borderRadius={"full"}>circle.net</Text>
+                        <Text fontSize={"sm"}> {user.username}</Text>
+                        <Text fontSize={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"} p={1} borderRadius={"10px"}>circle.net</Text>
+                    </Flex>
+                    <Box h={2} />
+                    <Flex className="follow-text">
+                        <Text>
+                            Followers: <Text as="span" className="follow-number">{user.followers.length}</Text>
+                        </Text>
+                        <Divider orientation="vertical" height="24px" borderColor={colorMode === "dark" ? "white" : "black"} mx={2} borderWidth={"1px"} />
+                        <Text>
+                            Following: <Text as="span" className="follow-number">{user.following.length}</Text>
+                        </Text>
                     </Flex>
                 </Box>
                 <Box>
-                    {user.profilePic && (
+                    {user.profilePic ? (
                         <Avatar
                             name={user.name}
                             src={user.profilePic}
                             size={"xl"}
                         />
-                    )}
-                    {!user.profilePic && (
+                    ) : (
                         <Avatar
                             name={user.name}
                             src="https://bit.ly/broken-link"
@@ -55,24 +65,20 @@ const UserHeader = ({ user }) => {
                     )}
                 </Box>
             </Flex>
-            <Text>{user.bio}</Text>
-            {currentUser._id === user._id && (
-                <Link as={RouterLink} to='/update'>
-                    <Button size={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"}  >Update your Profile</Button>
-                </Link>
-            )}
-            {currentUser._id !== user._id &&
-                <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
-                    {following ? "Unfollow" : "Follow"}
-                </Button>
-            }
-            <Flex width={"full"} justifyContent={"space-between"}>
-                <Flex gap={2} alignItems={"center"}>
-                    <Text color={"gray.light"}>{user.followers.lenght}</Text>
-                    <Box w={1} h={1} bg={"gray.light"} borderRadius={"full"}></Box>
-                    <Link color={"gray.light"}>instagram.com</Link>
-                </Flex>
-                <Flex>
+            <Text className="bio-header">About Me:</Text>
+            <Text className="user-bio"> {user.bio}</Text>
+
+            <Flex width={"full"} justifyContent={"space-between"} alignItems={"center"}>
+                {currentUser._id === user._id ? (
+                    <Link as={RouterLink} to='/update'>
+                        <Button size={"sm"} bg={colorMode === "dark" ? "gray.dark" : "white"}>Update your Profile</Button>
+                    </Link>
+                ) : (
+                    <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating} bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                        {following ? "Unfollow" : "Follow"}
+                    </Button>
+                )}
+                <Flex gap={2}>
                     <Box
                         className="icon-container"
                         sx={{
@@ -105,8 +111,8 @@ const UserHeader = ({ user }) => {
                 </Flex>
             </Flex>
 
-            <Flex width={"full"}>
-                <Flex flex={1} borderBottom={"1.5px solid white"} justifyContent={"center"} pb={3} cursor={"pointer"}>
+            <Flex className="user-header-spins" width={"full"}>
+                <Flex flex={1} justifyContent={"center"} pb={3} cursor={"pointer"}>
                     <Text fontWeight={"bold"}>Spins</Text>
                 </Flex>
             </Flex>

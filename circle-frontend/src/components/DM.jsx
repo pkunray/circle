@@ -19,9 +19,9 @@ const DM = ({ dm, isOnline }) => {
   const user = dm.participants[0];
   const lastMessage = dm.lastMessage;
   const currentUser = useRecoilValue(userAtom);
-  const [slectedDM, setSelectedDM] = useRecoilState(selectedDMAtom);
-  const colorMode = useColorMode();
-  console.log("slectedDM", slectedDM);
+  const [selectedDM, setSelectedDM] = useRecoilState(selectedDMAtom);
+  const { colorMode } = useColorMode();
+  console.log("slectedDM", selectedDM);
   return (
     <Flex
       gap={4}
@@ -43,7 +43,7 @@ const DM = ({ dm, isOnline }) => {
         });
       }}
       bg={
-        slectedDM?._id === dm._id
+        selectedDM?._id === dm._id
           ? colorMode === "light"
             ? "gray.400"
             : "gray.dark"

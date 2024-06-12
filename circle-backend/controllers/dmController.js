@@ -1,4 +1,4 @@
-import { DM } from "../models/dmModel.js";
+import { DM } from "../models/DMModel.js";
 import { Message } from "../models/messageModel.js";
 import { getRecipientSocketId, io } from "../socket/socket.js";
 

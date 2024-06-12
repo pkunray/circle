@@ -127,6 +127,11 @@ function Post({ post, postedBy }) {
                                 <Image src={post.img} w={"full"} />
                             </Box>
                         )}
+                        {post.video && (
+                            <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>
+                                <video src={post.video} controls />
+                            </Box>
+                        )}
 
                         <Flex gap={3} my={1}>
                             <Actions post={post} />

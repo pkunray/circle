@@ -31,7 +31,6 @@ export default function LoginCard() {
         showToast("Error", data.error, "error");
         return;
       }
-      console.log(data);
       localStorage.setItem("user-circle", JSON.stringify(data));
       setUser(data);
     }

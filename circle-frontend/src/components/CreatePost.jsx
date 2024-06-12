@@ -1,8 +1,9 @@
 import './CreatePost.css';
 import { useRef, useState, useEffect } from "react";
-import { AddIcon } from "@chakra-ui/icons";
-import { Button, CloseButton, Flex, FormControl, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { Button, CloseButton, Flex, FormControl, Image, Input, Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { BsFillImageFill } from "react-icons/bs";
+import { FaVideo } from "react-icons/fa";
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
@@ -14,7 +15,7 @@ const AVAILABLE_CHARS = 300;
 
 const CreatePost = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const { handleImageChange, imageUrl, setImageUrl } = usePreviewImg();
+    const { handleFileChange, imageUrl, setImageUrl, videoUrl, setVideoUrl } = usePreviewImg();
     const [postContent, setPostContent] = useState('');
     const [availableCharacters, setAvailableCharacters] = useState(AVAILABLE_CHARS);
     const [loading, setLoading] = useState(false);
@@ -23,7 +24,8 @@ const CreatePost = () => {
 
     const user = useRecoilValue(userAtom);
     const textArea = useRef(null);
-    const fileRef = useRef(null);
+    const imageFileRef = useRef(null);
+    const videoFileRef = useRef(null);
     const showToast = useShowToast();
 
     // Handles and limits text input
@@ -48,7 +50,7 @@ const CreatePost = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ postedBy: user._id, text: postContent, img: imageUrl }),
+                body: JSON.stringify({ postedBy: user._id, text: postContent, img: imageUrl, video: videoUrl }),
             });
             const data = await res.json();
             if (data.error) {
@@ -62,13 +64,13 @@ const CreatePost = () => {
             onClose();
             setPostContent("");
             setImageUrl("");
+            setVideoUrl("");
         } catch (error) {
             showToast("Error", error, "fetching error");
         } finally {
             setLoading(false);
         }
     };
-
 
     useEffect(() => {
         if (textArea.current) {
@@ -98,13 +100,20 @@ const CreatePost = () => {
                             <Text className="available-characters">
                                 {availableCharacters}/{AVAILABLE_CHARS}
                             </Text>
-                            <Input type="file" hidden ref={fileRef} onChange={handleImageChange} />
-                            <BsFillImageFill className="image-icon" size={15} onClick={() => fileRef.current.click()} />
+                            <Flex>
+                                <Input type="file" hidden ref={imageFileRef} onChange={(e) => handleFileChange(e, "image")} accept="image/*" />
+                                <Box mr={2}>
+                                    <BsFillImageFill className="image-icon" size={15} onClick={() => imageFileRef.current.click()} />
+                                </Box>
+                                <Input type="file" hidden ref={videoFileRef} onChange={(e) => handleFileChange(e, "video")} accept="video/*" />
+                                <FaVideo className="video-icon" size={15} onClick={() => videoFileRef.current.click()} />
+                            </Flex>
                         </FormControl>
-                        {imageUrl && (
+                        {(imageUrl || videoUrl) && (
                             <Flex className="image-container" mt={5} w={"full"} position={"relative"}>
-                                <Image src={imageUrl} alt='Image' />
-                                <CloseButton onClick={() => { setImageUrl(""); }} bg={"gray.800"} position={"absolute"} top={2} right={2} />
+                                {imageUrl && <Image src={imageUrl} alt='Image' />}
+                                {videoUrl && <video src={videoUrl} controls />}
+                                <DeleteIcon onClick={() => { setImageUrl(""); setVideoUrl(""); }} position={"absolute"} top={2} right={2} />
                             </Flex>
                         )}
                     </ModalBody>
@@ -118,6 +127,6 @@ const CreatePost = () => {
             </Modal>
         </>
     );
-};
+}
 
 export default CreatePost;
