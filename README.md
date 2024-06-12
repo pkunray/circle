@@ -6,8 +6,8 @@ Circle is a public social network designed with the best elements of popular pla
 
 ## Build and run docker images
 
-First, go to the root folder of this repository, replace the configuration in `.env.samle` with your own, and save it as `.env`.
-After that, head to the folder of `circle-backend`, replace the configration in `.env.samle` with your own, and save it as `.env`.
+First, go to the root folder of this repository, replace the configuration in `.env.sample` with your own, and save it as `.env`.
+After that, head to the folder of `circle-backend`, replace the configration in `.env.sample` with your own, and save it as `.env`.
 
 Then run the command:
 
